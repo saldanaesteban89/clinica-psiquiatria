@@ -327,6 +327,14 @@
       <div class="arrow" id="config-arrow">▼</div>
     </div>
     <div class="collapse-body" id="config-body">
+      <div style="margin-bottom:12px;">
+        <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Gemini</label>
+        <div style="display:flex;gap:8px;">
+          <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;font-family:var(--font-mono,monospace);font-size:12px;" oninput="onGeminiKeyInput()">
+          <button class="btn" onclick="toggleKeyVisibility()">Ver</button>
+        </div>
+        <div class="status-line" id="gemini-key-status">Pega tu API key de aistudio.google.com/apikey — se guarda solo en tu navegador.</div>
+      </div>
       <div class="webhook-row">
         <input type="url" id="webhook-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="onUrlInput()">
         <button class="btn" onclick="probarWebhook()">Probar</button>
@@ -478,7 +486,38 @@ window.addEventListener('load', () => {
     document.getElementById('webhook-status').textContent = 'URL guardada.';
     document.getElementById('webhook-status').className = 'status-line ok';
   }
+  const savedKey = localStorage.getItem('gemini_api_key');
+  if (savedKey) {
+    document.getElementById('gemini-key-input').value = savedKey;
+    document.getElementById('gemini-key-status').textContent = 'API key guardada en este navegador.';
+    document.getElementById('gemini-key-status').className = 'status-line ok';
+    document.getElementById('conn-badge').className = 'badge green';
+    document.getElementById('conn-badge').textContent = 'Lista';
+    document.getElementById('config-summary').textContent = 'API key configurada ✓';
+  } else {
+    toggleConfig();
+  }
 });
+
+function onGeminiKeyInput() {
+  const key = document.getElementById('gemini-key-input').value.trim();
+  if (key.startsWith('AIza') && key.length > 20) {
+    localStorage.setItem('gemini_api_key', key);
+    document.getElementById('gemini-key-status').textContent = 'API key guardada. Lista para usar.';
+    document.getElementById('gemini-key-status').className = 'status-line ok';
+    document.getElementById('conn-badge').className = 'badge green';
+    document.getElementById('conn-badge').textContent = 'Lista';
+    document.getElementById('config-summary').textContent = 'API key configurada ✓';
+  } else {
+    document.getElementById('gemini-key-status').textContent = 'La key debe empezar con AIza...';
+    document.getElementById('gemini-key-status').className = 'status-line err';
+  }
+}
+
+function toggleKeyVisibility() {
+  const input = document.getElementById('gemini-key-input');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
 
 function onUrlInput() {
   const url = document.getElementById('webhook-url').value.trim();
@@ -606,7 +645,9 @@ function buildContexto() {
 }
 
 async function callGemini(systemPrompt, userMsg) {
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyALaEfFAvRHhkoIX6apGlPdgOFn8LIXfAQ', {
+  const geminiKey = localStorage.getItem('gemini_api_key');
+  if (!geminiKey) throw new Error('Configura tu API key de Gemini en la sección de configuración.');
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + geminiKey, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
