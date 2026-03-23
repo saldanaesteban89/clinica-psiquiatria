@@ -605,6 +605,19 @@ function buildContexto() {
   return x;
 }
 
+async function callGemini(systemPrompt, userMsg) {
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBtua10BVRRgReYq2VvthcssZTnpqlsLYk', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: systemPrompt + '\n\n' + userMsg }] }],
+      generationConfig: { maxOutputTokens: 1800, temperature: 0.3 }
+    })
+  });
+  const data = await res.json();
+  return data.candidates[0].content.parts[0].text.trim();
+}
+
 async function generarYCrear() {
   const texto = document.getElementById('transcript').value.trim();
   if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
@@ -619,18 +632,7 @@ async function generarYCrear() {
   let historia = '';
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        system: PROMPT_SISTEMA,
-        messages: [{ role: 'user', content: msg }]
-      })
-    });
-    const data = await res.json();
-    historia = data.content.map(b => b.text || '').join('').trim();
+    historia = await callGemini(PROMPT_SISTEMA, msg);
     document.getElementById('historia-out').value = historia;
     setPipe(2,'done');
     extraerCampos(historia);
@@ -658,18 +660,7 @@ async function soloGenerar() {
   setStatus('Generando historia...', 'loading');
   const msg = `RELATO:\n"${texto}"${buildContexto()}\n\nGenera la historia clínica completa.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        system: PROMPT_SISTEMA,
-        messages: [{ role: 'user', content: msg }]
-      })
-    });
-    const data = await res.json();
-    const h = data.content.map(b => b.text||'').join('').trim();
+    const h = await callGemini(PROMPT_SISTEMA, msg);
     document.getElementById('historia-out').value = h;
     document.getElementById('btn-send-doc').style.display = '';
     extraerCampos(h);
@@ -718,17 +709,7 @@ async function extraerCampos(historia) {
 {"nombre":"","edad":"","origen":"","residencia":"","ocupacion":"","religion":"","familia":"","motivo":"","antecedentes":"","cuadro":"","examen":"","plan":""}
 HISTORIA:\n${historia}`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 700,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const raw = data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+    const raw = (await callGemini('', prompt)).replace(/```json|```/g,'').trim();
     const p = JSON.parse(raw);
     const map = {
       nombre:'c_nombre', edad:'c_edad', origen:'c_origen', residencia:'c_residencia',
@@ -760,18 +741,7 @@ async function regenerarDesde() {
   setStatus('Regenerando historia desde campos...', 'loading');
   const msg = `Regenera la historia clínica con estos datos:\n${JSON.stringify(campos, null, 2)}${buildContexto()}`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        system: PROMPT_SISTEMA,
-        messages: [{ role: 'user', content: msg }]
-      })
-    });
-    const data = await res.json();
-    const h = data.content.map(b=>b.text||'').join('').trim();
+    const h = await callGemini(PROMPT_SISTEMA, msg);
     document.getElementById('historia-out').value = h;
     switchTab('historia', document.getElementById('tab-btn-historia'));
     document.getElementById('btn-send-doc').style.display = '';
