@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>IC Psiquiatría — Colsubsidio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E2E0D8;
+    --border-strong: #C8C5BB;
+    --text: #1A1917;
+    --text-2: #6B6860;
+    --text-3: #9B9890;
+    --accent: #1A1917;
+    --green: #0F6E56;
+    --green-bg: #EAF3DE;
+    --green-text: #27500A;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --blue-text: #0C447C;
+    --red: #A32D2D;
+    --red-bg: #FCEBEB;
+    --amber-bg: #FAEEDA;
+    --amber-text: #633806;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--text);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-mark svg { width: 18px; height: 18px; }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 400;
+  }
+
+  .main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 14px 18px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-body { padding: 12px 18px 16px; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    margin-bottom: 12px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 500;
+  }
+  .badge.amber { background: var(--amber-bg); color: var(--amber-text); }
+  .badge.green { background: var(--green-bg); color: var(--green-text); }
+  .badge.red { background: var(--red-bg); color: var(--red); }
+  .badge.blue { background: var(--blue-bg); color: var(--blue-text); }
+
+  .rec-pulse {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    display: inline-block;
+  }
+  .recording .rec-pulse { animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  textarea, input, select {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  textarea:focus, input:focus, select:focus { border-color: var(--border-strong); background: #fff; }
+  textarea { resize: vertical; line-height: 1.6; }
+  textarea.transcript { min-height: 90px; }
+  textarea.historia { min-height: 300px; font-size: 13px; line-height: 1.75; font-family: 'DM Mono', monospace; }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.12s;
+    white-space: nowrap;
+    -webkit-appearance: none;
+  }
+  .btn:hover { background: var(--bg); }
+  .btn:active { transform: scale(0.97); }
+  .btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
+  .btn.primary:hover { opacity: 0.85; background: var(--text); }
+  .btn.danger { border-color: #E24B4A; color: var(--red); }
+  .btn.recording-btn { border-color: #E24B4A; color: var(--red); background: var(--red-bg); }
+  .btn:disabled { opacity: 0.4; pointer-events: none; }
+  .btn.full { width: 100%; justify-content: center; }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .status-line {
+    font-size: 12px;
+    color: var(--text-2);
+    margin-top: 8px;
+    min-height: 20px;
+    line-height: 1.5;
+  }
+  .status-line.ok { color: var(--green); }
+  .status-line.err { color: var(--red); }
+  .status-line.loading { color: var(--blue); }
+
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .fg { display: flex; flex-direction: column; gap: 5px; }
+  .fg.full { grid-column: 1 / -1; }
+  label { font-size: 11px; color: var(--text-2); font-weight: 500; }
+
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0 4px;
+    flex-wrap: wrap;
+  }
+  .pipe-step { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
+  .pipe-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-strong); flex-shrink: 0; }
+  .pipe-dot.done { background: var(--green); }
+  .pipe-dot.active { background: var(--blue); animation: pulse 1s infinite; }
+  .pipe-dot.err { background: var(--red); }
+  .pipe-arrow { font-size: 10px; color: var(--border-strong); }
+
+  .doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    background: var(--green-bg);
+    color: var(--green-text);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid #9FE1CB;
+    margin-top: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 18px;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 12px 16px 10px;
+    border: none;
+    background: none;
+    color: var(--text-2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-weight: 400;
+  }
+  .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
+
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  .timer-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+
+  .webhook-row { display: flex; gap: 8px; align-items: stretch; }
+  .webhook-row input { flex: 1; font-size: 12px; font-family: 'DM Mono', monospace; }
+  .webhook-row .btn { flex-shrink: 0; }
+
+  .config-collapsed { padding: 14px 18px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .config-collapsed .arrow { font-size: 12px; color: var(--text-3); transition: transform 0.2s; }
+  .config-collapsed.open .arrow { transform: rotate(180deg); }
+
+  .collapse-body { padding: 0 18px 16px; display: none; }
+  .collapse-body.open { display: block; }
+
+  @media (max-width: 480px) {
+    .fields-grid { grid-template-columns: 1fr; }
+    .fg.full { grid-column: 1; }
+    .btn-row { gap: 6px; }
+    .btn { font-size: 12px; padding: 9px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 2v14M2 9h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="9" cy="9" r="3" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">IC Psiquiatría</div>
+        <div class="logo-sub">Colsubsidio</div>
+      </div>
+    </div>
+    <div id="conn-badge" class="badge amber">Sin configurar</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Config card -->
+  <div class="card">
+    <div class="config-collapsed" id="config-toggle" onclick="toggleConfig()">
+      <div>
+        <div class="section-label" style="margin-bottom:2px;">Configuración</div>
+        <div style="font-size:13px;color:var(--text-2);" id="config-summary">URL de Google Apps Script</div>
+      </div>
+      <div class="arrow" id="config-arrow">▼</div>
+    </div>
+    <div class="collapse-body" id="config-body">
+      <div class="webhook-row">
+        <input type="url" id="webhook-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="onUrlInput()">
+        <button class="btn" onclick="probarWebhook()">Probar</button>
+      </div>
+      <div class="status-line" id="webhook-status">Pega la URL de tu Apps Script.</div>
+    </div>
+  </div>
+
+  <!-- Datos complementarios -->
+  <div class="card">
+    <div class="config-collapsed" id="datos-toggle" onclick="toggleDatos()">
+      <div>
+        <div class="section-label" style="margin-bottom:2px;">Datos de la consulta</div>
+        <div style="font-size:13px;color:var(--text-2);">Diagnóstico, tipo de IC, medicamentos</div>
+      </div>
+      <div class="arrow" id="datos-arrow">▼</div>
+    </div>
+    <div class="collapse-body" id="datos-body">
+      <div class="fields-grid">
+        <div class="fg">
+          <label>Diagnóstico principal</label>
+          <input type="text" id="dx" placeholder="Ej: DELIRIUM, DEPRESIÓN...">
+        </div>
+        <div class="fg">
+          <label>Tipo de interconsulta</label>
+          <select id="tipo_ic">
+            <option value="RESPUESTA A INTERCONSULTA POR PSIQUIATRÍA">Interconsulta psiquiatría</option>
+            <option value="INTERCONSULTA POR PSIQUIATRÍA">Interconsulta (urgente)</option>
+            <option value="CONTROL AMBULATORIO POR PSIQUIATRÍA">Control ambulatorio</option>
+            <option value="VALORACIÓN INICIAL POR PSIQUIATRÍA">Valoración inicial</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Valoración realizada con</label>
+          <input type="text" id="valoracion_con" placeholder="Ej: su esposo (José Niño)">
+        </div>
+        <div class="fg">
+          <label>Medicamentos del plan</label>
+          <input type="text" id="meds" placeholder="Ej: Quetiapina 25mg (0-0-1)">
+        </div>
+        <div class="fg full">
+          <label>Contexto hospitalario</label>
+          <input type="text" id="ctx_hosp" placeholder="Ej: en manejo por IVU con choque séptico...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grabación -->
+  <div class="card">
+    <div class="card-header">
+      <div class="section-label" style="margin-bottom:0;">Relato del paciente / familiar</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="timer-badge" id="rec-timer"></span>
+        <span id="rec-badge" class="badge amber"><span class="rec-pulse"></span> Listo</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <textarea id="transcript" class="transcript" placeholder="Graba la voz o escribe el relato aquí..."></textarea>
+
+      <div class="pipeline" id="pipeline" style="display:none;">
+        <div class="pipe-step"><div class="pipe-dot done" id="p1"></div><span>Audio</span></div>
+        <div class="pipe-arrow">›</div>
+        <div class="pipe-step"><div class="pipe-dot" id="p2"></div><span id="p2t">Generando historia</span></div>
+        <div class="pipe-arrow">›</div>
+        <div class="pipe-step"><div class="pipe-dot" id="p3"></div><span id="p3t">Creando Doc</span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" id="btn-rec" onclick="toggleRec()"><span class="rec-pulse"></span> Grabar voz</button>
+        <button class="btn primary" onclick="generarYCrear()">Generar + Doc ↗</button>
+        <button class="btn" onclick="soloGenerar()">Solo historia</button>
+      </div>
+      <div class="status-line" id="status-main">Graba el relato — al detener, se genera la historia y el Doc automáticamente.</div>
+      <div id="doc-link-area"></div>
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="tab-btn-historia" onclick="switchTab('historia',this)">Historia generada</button>
+      <button class="tab" id="tab-btn-campos" onclick="switchTab('campos',this)">Campos</button>
+    </div>
+
+    <div id="tab-historia" class="card-body">
+      <textarea id="historia-out" class="historia" placeholder="La historia clínica aparecerá aquí..."></textarea>
+      <div class="btn-row">
+        <button class="btn primary" onclick="copiarHistoria()">Copiar</button>
+        <button class="btn" id="btn-send-doc" onclick="enviarADoc()" style="display:none;">Guardar en Drive ↗</button>
+        <button class="btn" onclick="limpiarTodo()" style="margin-left:auto;">Limpiar todo</button>
+      </div>
+      <div class="status-line" id="status-export"></div>
+    </div>
+
+    <div id="tab-campos" class="card-body" style="display:none;">
+      <div class="fields-grid">
+        <div class="fg"><label>Nombre</label><input id="c_nombre" type="text" placeholder="—"></div>
+        <div class="fg"><label>Edad / Sexo</label><input id="c_edad" type="text" placeholder="—"></div>
+        <div class="fg"><label>Origen</label><input id="c_origen" type="text" placeholder="—"></div>
+        <div class="fg"><label>Residencia</label><input id="c_residencia" type="text" placeholder="—"></div>
+        <div class="fg"><label>Ocupación</label><input id="c_ocupacion" type="text" placeholder="—"></div>
+        <div class="fg"><label>Religión</label><input id="c_religion" type="text" placeholder="—"></div>
+        <div class="fg full"><label>Situación familiar</label><input id="c_familia" type="text" placeholder="—"></div>
+        <div class="fg full"><label>Motivo de consulta</label><textarea id="c_motivo" style="min-height:60px;" placeholder="—"></textarea></div>
+        <div class="fg full"><label>Antecedentes</label><textarea id="c_antecedentes" style="min-height:60px;" placeholder="—"></textarea></div>
+        <div class="fg full"><label>Cuadro clínico</label><textarea id="c_cuadro" style="min-height:60px;" placeholder="—"></textarea></div>
+        <div class="fg full"><label>Examen mental</label><textarea id="c_examen" style="min-height:60px;" placeholder="—"></textarea></div>
+        <div class="fg full"><label>Plan</label><textarea id="c_plan" style="min-height:60px;" placeholder="—"></textarea></div>
+      </div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn primary" onclick="regenerarDesde()">Regenerar historia desde campos ↗</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL_KEY = 'colsubsidio_script_url';
+let recog = null, recOn = false, recInt = null, recSec = 0;
+
+const PROMPT_SISTEMA = `Eres un psiquiatra experto en redacción de historias clínicas hospitalarias colombianas.
+Tu tarea es generar respuestas a interconsultas de psiquiatría siguiendo EXACTAMENTE este estilo y estructura:
+
+ESTRUCTURA OBLIGATORIA:
+1. DIAGNÓSTICO (en mayúsculas) como título
+2. Tipo de valoración (ej: RESPUESTA A INTERCONSULTA POR PSIQUIATRÍA)
+3. Párrafo de datos demográficos: "Paciente [sexo] de [edad] años, natural de [ciudad], residente y procedente de [ciudad]. Vive [con quién]. Se desempeña como [ocupación]. Profesa religión [religión]."
+4. Motivo de consulta entre comillas: Motivo de consulta": [frase]".
+5. "Se realiza valoración con paciente y con [acompañante]."
+6. Párrafo de ANTECEDENTES PSIQUIÁTRICOS
+7. Párrafo del CUADRO CLÍNICO ACTUAL con tiempo de evolución, síntomas, verbalizaciones entre comillas
+8. EXAMEN MENTAL en párrafo continuo con términos: euprosexica/hipoprosexica, eulalico, euquinetico, labilidad emocional, introspección, prospección
+9. ANÁLISIS con diagnóstico y decisión terapéutica
+10. PLAN con medicamentos (Nombre dosis tab (horario)), controles, recomendaciones
+11. Cerrar con: "Se resuelven dudas y se cierra IC."
+
+Usar *** para datos desconocidos. Tono clínico formal. Solo devuelve la historia, sin explicaciones ni backticks.`;
+
+// Init
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem(APPS_SCRIPT_URL_KEY);
+  if (saved) {
+    document.getElementById('webhook-url').value = saved;
+    document.getElementById('config-summary').textContent = 'Conectado ✓';
+    document.getElementById('conn-badge').className = 'badge green';
+    document.getElementById('conn-badge').textContent = 'Conectado';
+    document.getElementById('webhook-status').textContent = 'URL guardada.';
+    document.getElementById('webhook-status').className = 'status-line ok';
+  }
+});
+
+function onUrlInput() {
+  const url = document.getElementById('webhook-url').value.trim();
+  if (url.startsWith('https://script.google.com')) {
+    localStorage.setItem(APPS_SCRIPT_URL_KEY, url);
+    document.getElementById('config-summary').textContent = 'URL guardada';
+    document.getElementById('conn-badge').className = 'badge blue';
+    document.getElementById('conn-badge').textContent = 'Guardada';
+  }
+}
+
+function toggleConfig() {
+  const body = document.getElementById('config-body');
+  const toggle = document.getElementById('config-toggle');
+  const open = body.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+}
+
+function toggleDatos() {
+  const body = document.getElementById('datos-body');
+  const toggle = document.getElementById('datos-toggle');
+  const open = body.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+}
+
+async function probarWebhook() {
+  const url = document.getElementById('webhook-url').value.trim();
+  if (!url) { setWStatus('Pega la URL primero.', 'err'); return; }
+  setWStatus('Probando...', 'loading');
+  try {
+    const res = await fetch(url + '?test=1', { method: 'GET', mode: 'no-cors' });
+    localStorage.setItem(APPS_SCRIPT_URL_KEY, url);
+    document.getElementById('conn-badge').className = 'badge green';
+    document.getElementById('conn-badge').textContent = 'Conectado';
+    document.getElementById('config-summary').textContent = 'Conectado ✓';
+    setWStatus('URL guardada. La conexión está lista.', 'ok');
+  } catch(e) {
+    setWStatus('No se pudo verificar. Guarda la URL igual y prueba generando un doc.', 'err');
+  }
+}
+
+function toggleRec() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    setStatus('Usa Chrome o Safari para grabación de voz.', 'err'); return;
+  }
+  recOn ? stopRec(true) : startRec();
+}
+
+function startRec() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recog = new SR();
+  recog.continuous = true;
+  recog.interimResults = true;
+  recog.lang = 'es-CO';
+  let final = document.getElementById('transcript').value;
+
+  recog.onstart = () => {
+    recOn = true; recSec = 0;
+    const btn = document.getElementById('btn-rec');
+    btn.className = 'btn recording-btn';
+    btn.innerHTML = '<span class="rec-pulse"></span> Detener y generar';
+    document.getElementById('rec-badge').className = 'badge red recording';
+    document.getElementById('rec-badge').innerHTML = '<span class="rec-pulse"></span> Grabando';
+    recInt = setInterval(() => {
+      recSec++;
+      const m = String(Math.floor(recSec/60)).padStart(2,'0');
+      const s = String(recSec%60).padStart(2,'0');
+      document.getElementById('rec-timer').textContent = m+':'+s;
+    }, 1000);
+    setStatus('Escuchando en español colombiano...', 'loading');
+  };
+
+  recog.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    document.getElementById('transcript').value = final + interim;
+  };
+
+  recog.onerror = e => {
+    setStatus('Error al grabar: ' + e.error, 'err');
+    stopRec(false);
+  };
+
+  recog.onend = () => { if (recOn) stopRec(true); };
+  recog.start();
+}
+
+function stopRec(autoGenerar) {
+  recOn = false;
+  if (recog) recog.stop();
+  clearInterval(recInt);
+  const btn = document.getElementById('btn-rec');
+  btn.className = 'btn';
+  btn.innerHTML = '<span class="rec-pulse"></span> Grabar voz';
+  document.getElementById('rec-badge').className = 'badge green';
+  document.getElementById('rec-badge').innerHTML = 'Listo ✓';
+  document.getElementById('rec-timer').textContent = '';
+  if (autoGenerar) {
+    setStatus('Grabación terminada. Generando historia...', 'loading');
+    generarYCrear();
+  }
+}
+
+function setPipe(step, state) {
+  document.getElementById('pipeline').style.display = 'flex';
+  document.getElementById('p' + step).className = 'pipe-dot ' + state;
+}
+
+function buildContexto() {
+  let x = '';
+  const dx = document.getElementById('dx').value;
+  const tipo = document.getElementById('tipo_ic').value;
+  const con = document.getElementById('valoracion_con').value;
+  const meds = document.getElementById('meds').value;
+  const ctx = document.getElementById('ctx_hosp').value;
+  if (dx) x += `\nDIAGNÓSTICO: ${dx}`;
+  if (tipo) x += `\nTIPO IC: ${tipo}`;
+  if (con) x += `\nVALORACIÓN CON: ${con}`;
+  if (ctx) x += `\nCONTEXTO HOSPITALARIO: ${ctx}`;
+  if (meds) x += `\nMEDICAMENTOS: ${meds}`;
+  return x;
+}
+
+async function generarYCrear() {
+  const texto = document.getElementById('transcript').value.trim();
+  if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
+
+  document.getElementById('historia-out').value = '';
+  document.getElementById('doc-link-area').innerHTML = '';
+  document.getElementById('btn-send-doc').style.display = 'none';
+  setPipe(1,'done'); setPipe(2,'active'); setPipe(3,'');
+  setStatus('Generando historia clínica con IA...', 'loading');
+
+  const msg = `RELATO:\n"${texto}"${buildContexto()}\n\nGenera la historia clínica completa.`;
+  let historia = '';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        system: PROMPT_SISTEMA,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    historia = data.content.map(b => b.text || '').join('').trim();
+    document.getElementById('historia-out').value = historia;
+    setPipe(2,'done');
+    extraerCampos(historia);
+  } catch(e) {
+    setStatus('Error al generar historia. Revisa la conexión.', 'err');
+    setPipe(2,'err'); return;
+  }
+
+  const url = localStorage.getItem(APPS_SCRIPT_URL_KEY);
+  if (!url) {
+    setStatus('Historia lista. Configura el Apps Script para guardar en Drive.', 'ok');
+    document.getElementById('btn-send-doc').style.display = '';
+    setPipe(3,'err');
+    return;
+  }
+
+  setPipe(3,'active');
+  setStatus('Creando documento en Google Drive...', 'loading');
+  await crearDoc(historia);
+}
+
+async function soloGenerar() {
+  const texto = document.getElementById('transcript').value.trim();
+  if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
+  setStatus('Generando historia...', 'loading');
+  const msg = `RELATO:\n"${texto}"${buildContexto()}\n\nGenera la historia clínica completa.`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        system: PROMPT_SISTEMA,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    const h = data.content.map(b => b.text||'').join('').trim();
+    document.getElementById('historia-out').value = h;
+    document.getElementById('btn-send-doc').style.display = '';
+    extraerCampos(h);
+    setStatus('Historia generada. Revisa y edita si es necesario.', 'ok');
+  } catch(e) { setStatus('Error al generar.', 'err'); }
+}
+
+async function enviarADoc() {
+  const h = document.getElementById('historia-out').value.trim();
+  if (!h) { setStatus('No hay historia generada.', 'err'); return; }
+  const url = localStorage.getItem(APPS_SCRIPT_URL_KEY);
+  if (!url) { setWStatus('Pega la URL del Apps Script primero.', 'err'); toggleConfig(); return; }
+  setStatus('Creando documento en Google Drive...', 'loading');
+  await crearDoc(h);
+}
+
+async function crearDoc(historia) {
+  const url = localStorage.getItem(APPS_SCRIPT_URL_KEY);
+  const nombre = document.getElementById('c_nombre').value || '***';
+  const payload = {
+    nombre,
+    diagnostico: document.getElementById('dx').value || 'INTERCONSULTA POR PSIQUIATRÍA',
+    tipo_ic: document.getElementById('tipo_ic').value,
+    historia
+  };
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    setPipe(3,'done');
+    setStatus('Documento enviado a Google Drive. Ábrelo desde Drive.', 'ok');
+    document.getElementById('doc-link-area').innerHTML =
+      `<a class="doc-link" href="https://drive.google.com/drive/folders/1Ql2IimpT-4nrOxFfLFw6E0g5nfqzKaCG" target="_blank">Abrir carpeta en Google Drive →</a>`;
+    document.getElementById('btn-send-doc').style.display = 'none';
+  } catch(e) {
+    setPipe(3,'err');
+    setStatus('Error al crear el documento. Verifica la URL del script.', 'err');
+  }
+}
+
+async function extraerCampos(historia) {
+  const prompt = `Del siguiente texto extrae los campos en JSON puro sin backticks ni markdown:
+{"nombre":"","edad":"","origen":"","residencia":"","ocupacion":"","religion":"","familia":"","motivo":"","antecedentes":"","cuadro":"","examen":"","plan":""}
+HISTORIA:\n${historia}`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 700,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+    const p = JSON.parse(raw);
+    const map = {
+      nombre:'c_nombre', edad:'c_edad', origen:'c_origen', residencia:'c_residencia',
+      ocupacion:'c_ocupacion', religion:'c_religion', familia:'c_familia', motivo:'c_motivo',
+      antecedentes:'c_antecedentes', cuadro:'c_cuadro', examen:'c_examen', plan:'c_plan'
+    };
+    Object.keys(map).forEach(k => {
+      const el = document.getElementById(map[k]);
+      if (el && p[k] && p[k] !== '***') el.value = p[k];
+    });
+  } catch(e) {}
+}
+
+async function regenerarDesde() {
+  const campos = {
+    nombre: document.getElementById('c_nombre').value,
+    edad: document.getElementById('c_edad').value,
+    origen: document.getElementById('c_origen').value,
+    residencia: document.getElementById('c_residencia').value,
+    ocupacion: document.getElementById('c_ocupacion').value,
+    religion: document.getElementById('c_religion').value,
+    familia: document.getElementById('c_familia').value,
+    motivo: document.getElementById('c_motivo').value,
+    antecedentes: document.getElementById('c_antecedentes').value,
+    cuadro: document.getElementById('c_cuadro').value,
+    examen: document.getElementById('c_examen').value,
+    plan: document.getElementById('c_plan').value,
+  };
+  setStatus('Regenerando historia desde campos...', 'loading');
+  const msg = `Regenera la historia clínica con estos datos:\n${JSON.stringify(campos, null, 2)}${buildContexto()}`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        system: PROMPT_SISTEMA,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    const h = data.content.map(b=>b.text||'').join('').trim();
+    document.getElementById('historia-out').value = h;
+    switchTab('historia', document.getElementById('tab-btn-historia'));
+    document.getElementById('btn-send-doc').style.display = '';
+    setStatus('Historia regenerada. Revisa y guarda en Drive.', 'ok');
+  } catch(e) { setStatus('Error al regenerar.', 'err'); }
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-historia').style.display = tab === 'historia' ? '' : 'none';
+  document.getElementById('tab-campos').style.display = tab === 'campos' ? '' : 'none';
+}
+
+function copiarHistoria() {
+  const h = document.getElementById('historia-out').value;
+  if (!h) return;
+  navigator.clipboard.writeText(h).then(() => {
+    document.getElementById('status-export').textContent = 'Historia copiada al portapapeles.';
+    document.getElementById('status-export').className = 'status-line ok';
+  });
+}
+
+function limpiarTodo() {
+  ['transcript','historia-out','c_nombre','c_edad','c_origen','c_residencia','c_ocupacion',
+   'c_religion','c_familia','c_motivo','c_antecedentes','c_cuadro','c_examen','c_plan',
+   'dx','valoracion_con','meds','ctx_hosp'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('tipo_ic').selectedIndex = 0;
+  document.getElementById('doc-link-area').innerHTML = '';
+  document.getElementById('pipeline').style.display = 'none';
+  document.getElementById('btn-send-doc').style.display = 'none';
+  document.getElementById('rec-badge').className = 'badge amber';
+  document.getElementById('rec-badge').innerHTML = '<span class="rec-pulse"></span> Listo';
+  document.getElementById('rec-timer').textContent = '';
+  setStatus('Listo para nuevo paciente.', '');
+  document.getElementById('status-export').textContent = '';
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('status-main');
+  el.textContent = msg;
+  el.className = 'status-line ' + (type || '');
+}
+function setWStatus(msg, type) {
+  const el = document.getElementById('webhook-status');
+  el.textContent = msg;
+  el.className = 'status-line ' + (type || '');
+}
+</script>
+</body>
+</html>
