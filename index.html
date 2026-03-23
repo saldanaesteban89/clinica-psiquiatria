@@ -615,6 +615,13 @@ async function callGemini(systemPrompt, userMsg) {
     })
   });
   const data = await res.json();
+  if (!res.ok) {
+    const errMsg = data.error ? data.error.message : JSON.stringify(data);
+    throw new Error('Gemini: ' + errMsg);
+  }
+  if (!data.candidates || !data.candidates[0]) {
+    throw new Error('Gemini no devolvió respuesta: ' + JSON.stringify(data));
+  }
   return data.candidates[0].content.parts[0].text.trim();
 }
 
@@ -637,7 +644,7 @@ async function generarYCrear() {
     setPipe(2,'done');
     extraerCampos(historia);
   } catch(e) {
-    setStatus('Error al generar historia. Revisa la conexión.', 'err');
+    setStatus('Error: ' + e.message, 'err');
     setPipe(2,'err'); return;
   }
 
