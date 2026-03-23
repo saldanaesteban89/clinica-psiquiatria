@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///Users/fluvip/Downloads/index_1.html -->
-<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="es">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>IC Psiquiatría — Colsubsidio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="./IC Psiquiatría — Colsubsidio_files/css2" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F7F6F2;
@@ -302,8 +302,8 @@
     <div class="logo">
       <div class="logo-mark">
         <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 2v14M2 9h14" stroke="white" stroke-width="2" stroke-linecap="round"></path>
-          <circle cx="9" cy="9" r="3" fill="white"></circle>
+          <path d="M9 2v14M2 9h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="9" cy="9" r="3" fill="white"/>
         </svg>
       </div>
       <div>
@@ -408,8 +408,8 @@
   <!-- Resultado -->
   <div class="card">
     <div class="tabs">
-      <button class="tab active" id="tab-btn-historia" onclick="switchTab(&#39;historia&#39;,this)">Historia generada</button>
-      <button class="tab" id="tab-btn-campos" onclick="switchTab(&#39;campos&#39;,this)">Campos</button>
+      <button class="tab active" id="tab-btn-historia" onclick="switchTab('historia',this)">Historia generada</button>
+      <button class="tab" id="tab-btn-campos" onclick="switchTab('campos',this)">Campos</button>
     </div>
 
     <div id="tab-historia" class="card-body">
@@ -606,7 +606,7 @@ function buildContexto() {
 }
 
 async function callGemini(systemPrompt, userMsg) {
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyBtua10BVRRgReYq2VvthcssZTnpqlsLYk', {
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyBtua10BVRRgReYq2VvthcssZTnpqlsLYk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -801,6 +801,5 @@ function setWStatus(msg, type) {
   el.className = 'status-line ' + (type || '');
 }
 </script>
-
-
-</body></html>
+</body>
+</html>
