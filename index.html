@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0041)file:///Users/fluvip/Downloads/index.html -->
+<!-- saved from url=(0043)file:///Users/fluvip/Downloads/index_1.html -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>IC Psiquiatría — Colsubsidio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="./IC Psiquiatría — Colsubsidio_files/css2" rel="stylesheet">
+<link href="./indexok_files/css2" rel="stylesheet">
 <style>
   :root {
     --bg: #F7F6F2;
@@ -328,12 +328,12 @@
     </div>
     <div class="collapse-body open" id="config-body">
       <div style="margin-bottom:12px;">
-        <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Gemini</label>
+        <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Groq</label>
         <div style="display:flex;gap:8px;">
           <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;font-family:var(--font-mono,monospace);font-size:12px;" oninput="onGeminiKeyInput()">
           <button class="btn" onclick="toggleKeyVisibility()">Ver</button>
         </div>
-        <div class="status-line" id="gemini-key-status">Pega tu API key de aistudio.google.com/apikey — se guarda solo en tu navegador.</div>
+        <div class="status-line" id="gemini-key-status">Pega tu API key de console.groq.com — empieza con gsk_... — se guarda solo en tu navegador.</div>
       </div>
       <div class="webhook-row">
         <input type="url" id="webhook-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="onUrlInput()">
@@ -545,7 +545,7 @@ window.addEventListener('load', () => {
 
 function onGeminiKeyInput() {
   const key = document.getElementById('gemini-key-input').value.trim();
-  if (key.startsWith('AIza') && key.length > 20) {
+  if (key.startsWith('gsk_') && key.length > 20) {
     localStorage.setItem('gemini_api_key', key);
     document.getElementById('gemini-key-status').textContent = 'API key guardada. Lista para usar.';
     document.getElementById('gemini-key-status').className = 'status-line ok';
@@ -553,7 +553,7 @@ function onGeminiKeyInput() {
     document.getElementById('conn-badge').textContent = 'Lista';
     document.getElementById('config-summary').textContent = 'API key configurada ✓';
   } else {
-    document.getElementById('gemini-key-status').textContent = 'La key debe empezar con AIza...';
+    document.getElementById('gemini-key-status').textContent = 'La key debe empezar con gsk_...';
     document.getElementById('gemini-key-status').className = 'status-line err';
   }
 }
@@ -691,25 +691,27 @@ function buildContexto() {
 }
 
 async function callGemini(systemPrompt, userMsg) {
-  const geminiKey = localStorage.getItem('gemini_api_key');
-  if (!geminiKey) throw new Error('Configura tu API key de Gemini en la sección de configuración.');
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + geminiKey, {
+  const apiKey = localStorage.getItem('gemini_api_key');
+  if (!apiKey) throw new Error('Configura tu API key de Groq en la seccion de configuracion.');
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: systemPrompt + '\n\n' + userMsg }] }],
-      generationConfig: { maxOutputTokens: 1800, temperature: 0.3 }
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 2000,
+      temperature: 0.3,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMsg }
+      ]
     })
   });
   const data = await res.json();
-  if (!res.ok) {
-    const errMsg = data.error ? data.error.message : JSON.stringify(data);
-    throw new Error('Gemini: ' + errMsg);
-  }
-  if (!data.candidates || !data.candidates[0]) {
-    throw new Error('Gemini no devolvió respuesta: ' + JSON.stringify(data));
-  }
-  return data.candidates[0].content.parts[0].text.trim();
+  if (!res.ok) throw new Error(data.error ? data.error.message : JSON.stringify(data));
+  return data.choices[0].message.content.trim();
 }
 
 async function generarYCrear() {
