@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///Users/fluvip/Downloads/index_1.html -->
-<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="es">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>IC Psiquiatría — Colsubsidio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="./indexok_files/css2" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F7F6F2;
@@ -302,8 +302,8 @@
     <div class="logo">
       <div class="logo-mark">
         <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 2v14M2 9h14" stroke="white" stroke-width="2" stroke-linecap="round"></path>
-          <circle cx="9" cy="9" r="3" fill="white"></circle>
+          <path d="M9 2v14M2 9h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="9" cy="9" r="3" fill="white"/>
         </svg>
       </div>
       <div>
@@ -319,14 +319,14 @@
 
   <!-- Config card -->
   <div class="card">
-    <div class="config-collapsed open" id="config-toggle" onclick="toggleConfig()">
+    <div class="config-collapsed" id="config-toggle" onclick="toggleConfig()">
       <div>
         <div class="section-label" style="margin-bottom:2px;">Configuración</div>
         <div style="font-size:13px;color:var(--text-2);" id="config-summary">URL de Google Apps Script</div>
       </div>
       <div class="arrow" id="config-arrow">▼</div>
     </div>
-    <div class="collapse-body open" id="config-body">
+    <div class="collapse-body" id="config-body">
       <div style="margin-bottom:12px;">
         <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Groq</label>
         <div style="display:flex;gap:8px;">
@@ -416,8 +416,8 @@
   <!-- Resultado -->
   <div class="card">
     <div class="tabs">
-      <button class="tab active" id="tab-btn-historia" onclick="switchTab(&#39;historia&#39;,this)">Historia generada</button>
-      <button class="tab" id="tab-btn-campos" onclick="switchTab(&#39;campos&#39;,this)">Campos</button>
+      <button class="tab active" id="tab-btn-historia" onclick="switchTab('historia',this)">Historia generada</button>
+      <button class="tab" id="tab-btn-campos" onclick="switchTab('campos',this)">Campos</button>
     </div>
 
     <div id="tab-historia" class="card-body">
@@ -511,14 +511,18 @@ Continuar con las intervenciones por psicologia. PRIORITARIA.
 Recomendaciones y signos de alarma para consultar.
 
 REGLAS ABSOLUTAS:
-1. FIDELIDAD TOTAL: Usa TODOS los datos del relato sin omitir nada. Cada sintoma, verbalizacion, medicamento, fecha, nombre y detalle debe aparecer en la historia.
-2. Incluye verbalizaciones textuales del paciente o familiar entre comillas dentro del cuadro clinico.
-3. Las negaciones van al final del cuadro clinico: "Niega ideas de muerte o de suicidio actualmente, niega ideas de auto o hetero agresion, niega sintomas psicoticos, niega sintomas maniformes, niega conductas de riesgo."
-4. EXAMEN MENTAL:, ANALISIS: y PLAN: son titulos separados en mayusculas.
-5. Medicamentos con nombre generico + dosis + forma farmaceutica + posologia entre parentesis.
-6. Usar *** solo para datos completamente desconocidos.
-7. Tono clinico formal, tercera persona, mismo nivel de detalle que los ejemplos.
-8. Solo devuelve la historia. Sin explicaciones, sin backticks, sin comentarios previos.`;
+1. FIDELIDAD DE DATOS: Usa todos los datos demograficos, antecedentes y sintomas del relato. Pero el ANALISIS y el PLAN deben ser redactados con criterio clinico propio, no copiados literalmente del relato.
+2. CUADRO CLINICO: Redactalo de forma narrativa clinica fluida. No transcribas el relato palabra por palabra - reformulalo en lenguaje psiquiatrico profesional usando los datos como base.
+3. ANALISIS: Debe demostrar razonamiento clinico real. Incluye: diagnostico presuntivo justificado, correlacion entre antecedentes y cuadro actual, nivel de riesgo, decision terapeutica con justificacion. Minimo 4-6 oraciones.
+4. PLAN: Construyelo con criterio clinico segun el diagnostico y la gravedad. Si el relato no menciona medicamentos especificos, propone los farmacologicamente indicados para ese diagnostico con dosis y posologia correctas. Incluye siempre controles, psicologia, trabajo social si aplica.
+5. Las verbalizaciones del paciente o familiar se introducen con dos puntos SIN comillas. Ejemplo: Refiere: se puso a decir cosas que no eran.
+6. Las negaciones van al final del cuadro clinico: Niega ideas de muerte o de suicidio actualmente, niega ideas de auto o hetero agresion, niega sintomas psicoticos, niega sintomas maniformes, niega conductas de riesgo.
+7. EXAMEN MENTAL:, ANALISIS: y PLAN: son titulos separados en mayusculas con dos puntos.
+8. Medicamentos con nombre generico + dosis + forma farmaceutica + posologia entre parentesis.
+9. Usar *** solo para datos completamente desconocidos.
+10. NUNCA uses comillas dobles ni simples en ninguna parte del texto.
+11. Tono clinico formal, tercera persona, mismo nivel de detalle y profesionalismo que los ejemplos.
+12. Solo devuelve la historia. Sin explicaciones, sin backticks, sin comentarios previos.`;
 // Init
 window.addEventListener('load', () => {
   const saved = localStorage.getItem(APPS_SCRIPT_URL_KEY);
@@ -724,12 +728,15 @@ async function generarYCrear() {
   setPipe(1,'done'); setPipe(2,'active'); setPipe(3,'');
   setStatus('Generando historia clínica con IA...', 'loading');
 
-  const msg = `INSTRUCCION CRITICA: Debes incluir en la historia clinica ABSOLUTAMENTE TODO lo que aparece en el relato. No omitas, no resumas, no ignores ningun dato, sintoma, verbalizacion, medicamento, fecha ni detalle mencionado. Cada dato del relato debe aparecer en la seccion correspondiente de la historia.
+  const msg = `DATOS DEL CASO (usa estos como base clinica):
+${texto}${buildContexto()}
 
-RELATO COMPLETO (usa TODOS estos datos sin excepcion):
-"${texto}"${buildContexto()}
-
-Genera la historia clinica completa usando todos los datos del relato sin omitir nada.`;
+INSTRUCCIONES:
+- Usa los datos demograficos y clinicos del relato como base.
+- El cuadro clinico reformulalo en lenguaje psiquiatrico profesional, no lo transcribas literal.
+- El ANALISIS debe mostrar razonamiento clinico propio: diagnostico justificado, correlacion clinica, nivel de riesgo, decision terapeutica.
+- El PLAN debe ser completo y clinicamente apropiado para el diagnostico. Si no se mencionan medicamentos, propone los indicados.
+- La historia debe sonar como escrita por un psiquiatra experto, no como una transcripcion del relato.`;
   let historia = '';
 
   try {
@@ -759,12 +766,15 @@ async function soloGenerar() {
   const texto = document.getElementById('transcript').value.trim();
   if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
   setStatus('Generando historia...', 'loading');
-  const msg = `INSTRUCCION CRITICA: Debes incluir en la historia clinica ABSOLUTAMENTE TODO lo que aparece en el relato. No omitas, no resumas, no ignores ningun dato, sintoma, verbalizacion, medicamento, fecha ni detalle mencionado. Cada dato del relato debe aparecer en la seccion correspondiente de la historia.
+  const msg = `DATOS DEL CASO (usa estos como base clinica):
+${texto}${buildContexto()}
 
-RELATO COMPLETO (usa TODOS estos datos sin excepcion):
-"${texto}"${buildContexto()}
-
-Genera la historia clinica completa usando todos los datos del relato sin omitir nada.`;
+INSTRUCCIONES:
+- Usa los datos demograficos y clinicos del relato como base.
+- El cuadro clinico reformulalo en lenguaje psiquiatrico profesional, no lo transcribas literal.
+- El ANALISIS debe mostrar razonamiento clinico propio: diagnostico justificado, correlacion clinica, nivel de riesgo, decision terapeutica.
+- El PLAN debe ser completo y clinicamente apropiado para el diagnostico. Si no se mencionan medicamentos, propone los indicados.
+- La historia debe sonar como escrita por un psiquiatra experto, no como una transcripcion del relato.`;
   try {
     const h = await callGemini(PROMPT_SISTEMA, msg);
     document.getElementById('historia-out').value = h;
@@ -900,6 +910,5 @@ function setWStatus(msg, type) {
   el.className = 'status-line ' + (type || '');
 }
 </script>
-
-
-</body></html>
+</body>
+</html>
