@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///Users/fluvip/Downloads/index_1.html -->
+<!-- saved from url=(0041)file:///Users/fluvip/Downloads/index.html -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -162,7 +162,7 @@
   }
   textarea:focus, input:focus, select:focus { border-color: var(--border-strong); background: #fff; }
   textarea { resize: vertical; line-height: 1.6; }
-  textarea.transcript { min-height: 90px; }
+  textarea.transcript { min-height: 120px; max-height: 260px; overflow-y: auto; resize: none; }
   textarea.historia { min-height: 300px; font-size: 13px; line-height: 1.75; font-family: 'DM Mono', monospace; }
 
   .btn {
@@ -457,73 +457,68 @@
 const APPS_SCRIPT_URL_KEY = 'colsubsidio_script_url';
 let recog = null, recOn = false, recInt = null, recSec = 0;
 
-const PROMPT_SISTEMA = `Eres un psiquiatra experto en redaccion de historias clinicas hospitalarias colombianas para Colsubsidio.
-Genera interconsultas de psiquiatria EXACTAMENTE con esta estructura y estilo:
+const PROMPT_SISTEMA = `Eres una psiquiatra experta que redacta interconsultas hospitalarias en Colombia. Debes escribir exactamente como en estos ejemplos reales - mismo nivel de detalle clinico, mismo vocabulario, misma estructura. NUNCA generes historias basicas o incompletas.
 
-ESTRUCTURA EXACTA OBLIGATORIA:
-
-LINEA 1 - ENCABEZADO (todo en mayusculas):
-RESPUESTA A INTERCONSULTA POR PSIQUIATRIA - [CONTEXTO]
-Contexto puede ser: HOSPITALIZACION* paciente mal informante SIN ACOMPANANTE- SE REALIZA COMUNICACION CON SU FAMILIAR VIA TELEFONICA- SENOR/A [NOMBRE] / VALORACION SIN ACOMPANANTE / VALORACION CON SU [PARENTESCO] [NOMBRE] / SE REALIZA VALORACION CON SU [PARENTESCO] [NOMBRE]
-
-LINEA 2 - DATOS DEMOGRAFICOS (parrafo continuo sin titulo):
-"Paciente [femenina/masculino] de [edad] anos[, natural de [ciudad]], residente y procedente de [ciudad]. Vive con [con quien]. [Es/Se dedica a] [ocupacion][, actualmente [situacion laboral]]."
-NO incluir religion salvo que sea mencionada.
-
-LINEA 3 - ANTECEDENTES (parrafo continuo sin titulo):
-Antecedentes psiquiatricos, hospitalizaciones en USM, medicamentos con dosis y posologia entre parentesis.
-Si no hay: "Paciente sin antecedentes [claros] por psiquiatria. Niega manejo en USM. Niega intentos de suicidio previos."
-
-LINEA 4 - CUADRO CLINICO (parrafo continuo sin titulo):
-"Paciente quien presenta cuadro clinico de [tiempo] de evolucion, consistente en [sintomas]."
-Incluir verbalizaciones textuales del paciente entre comillas dentro del parrafo.
-Agregar negaciones: "Niega antecedentes por psiquiatria, niega intentos de suicidio previos o manejo en Usm"
-
-LINEA 5 - EXAMEN MENTAL (con titulo separado en mayusculas):
+EJEMPLO 1 (paciente sin acompanante, contacto telefonico):
+RESPUESTA A INTERCONSULTA POR PSIQUIATRIA - HOSPITALIZACION* paciente mal informante SIN ACOMPANANTE- SE REALIZA COMUNICACION CON SU FAMILIAR VIA TELEFONICA- SENOR JOSE MARIN
+Paciente femenina de 31 anos . Vive con sus padres e hija de 14 anos. Es trabajadora social de profesion, actualmente cesante por su patologia.
+Paciente con antecedente al parecer de Trastorno afectivo bipolar, desde hace 6 anos y asociado a consumo de SPA( Cannabis, cocaina y bazuco). Ha requerido 2 hospitalizaciones en USM, la ultima hace 30 dias en Hospital La Victoria. Egreso con: Litio 300 mg tab (1-1-1), Risperidona 1 mg tab (2-0-2) y levomepromazina 4% (0-0-10 gotas).
+Su padre refiere cuadro clinico de 12 dias de evolucion consistente en cambios comportamentales, irritabilidad, la mayor parte del dia y todos los dias, con aumento de actividad intencionada, episodios de dromomania, con conductas de riesgo como salir de su casa y deambular a altas horas de la noche. Adicional conductas de heteroagresion fisica y verbal hacia sus cuidadores, con ideas delirante de paranoia, discurso desorganizado, asociacion laxa de ideas; con alucinaciones auditivas complejas y coprolalia. En cuanto al patron del sueno con hiposomnia.
 EXAMEN MENTAL:
-"Se encuentra [a paciente / a la paciente] en [su habitacion / camilla / UCI / su cama]. Luce con [adecuada/aceptable] higiene y presentacion personal[, edad aparente acorde a la edad cronologica]. [alerta / bajo estado de intubacion], [contactado/a con el entorno], orientado/a en [tres esferas / persona y espacio], [euprosexica/hipoprosexica/euprosexico], [eulalico/eulalica/laconico/laconico/con leve disartria], [euquinetico/euquinetica/con inquietud motora]. Con afecto [de fondo ansioso/triste/irritable], [contenido/modulado/labil], resonante y congruente con el discurso. Pensamiento [logico, coherente / se infiere logico], [contenido]. [Niega ideas de muerte, niega ideas de suicidio / ideas sobrevaloradas de...]. [No actitud alucinatoria / No impresiona actitud alucinatoria]. [Niega alucinaciones.] inteligencia impresiona [promedio], [juicio y raciocinio conservado/desviado/debilitado/comprometido], introspección [conservada/parcial/precaria/pobre/nula], prospeccion [hacia la mejoria/en elaboracion/incierta]."
-
-LINEA 6 - ANALISIS (con titulo separado en mayusculas):
+Se encuentra en camilla. Luce con aceptable higiene y presentacion personal, alerta, orientada en tres esferas, con inquietud motora, actitud de suspicacia. No establece contacto visual, verbal a demanda. Con afecto irritable, contenido, resonante y congruente con el discurso. Pensamiento se infiere logico, interrumpe la entrevista y no colabora mas. impresiona encapsulamiento de ideacion. inteligencia impresiona promedio, juicio y raciocinio desviado, introspeccion nula, prospeccion incierta.
 ANALISIS:
-Parrafo con: resumen del paciente, diagnostico presuntivo, razonamiento clinico, decision terapeutica.
-Terminar con una de: "Se resuelven dudas y se cierra IC." / "Quedamos atentos a novedades y a nuevas valoraciones. Se cierra IC." / "Se explica conducta a paciente y a su [familiar], quienes entienden y aceptan." / "Paciente entiende, acepta y resuelve dudas."
-
-LINEA 7 - PLAN (con titulo separado, cada item en linea nueva):
+Paciente femenina de 31 anos, con patologia dual, al parecer antecedente de TAB tipo I y consumo de SPA. Paciente quien presenta cuadro clinico de sintomatologia aguda, consistente en sintomas psicoticos positivos y maniformes; con sintomas que han interferido en su funcionalidad con conductas de riesgo, abandono de sus actividades cotidianas y episodios de heteroagresion a 3eros. En el momento tiene mala adherencia al esquema de manejo; por lo cual indico remision a USM, considero probabilidad de iniciar medicamento de deposito, para garantizar mayor adherencia al manejo y estabilidad clinica. Se indica remision y se explica conducta al padre de la paciente, quien entiende y acepta.
 PLAN:
-[Primera linea: "Se cierra IC por psiquiatria" / "REMISION A USM." / "AL egreso revaloracion."]
-[Medicamento: Nombre generico Xmg forma (posologia) - instruccion adicional si aplica]
-[Controles: "Control ambulatorio por psiquiatria" / "Control en X dias por psiquiatria"]
-[Psicologia, trabajo social, neurologia segun corresponda]
-["Se sugiere acompanamiento permanente por su familiar[, los primeros X dias]."]
-["Vigilancia por alto riesgo de [suicidio/heteroagresion/evasion/caida]."]
-["Recomendaciones y signos de alarma para [reconsultar/consultar]."]
-[CSV-AC si hay riesgo de heteroagresion, evasion o caida]
+REMISION A USM.
+Risperidona 3 mg tab (0-0-1)
+Carbonato de litio 300 mg tab (1-0-2)
+Levomepromazina al 4 % (5-5-15)
+Acompanamiento permanente por su familiar.
+Si agitacion aplicar - (Haloperidol 5 mg / midazolam 5mg) im
+Vigilar alto riesgo de HETEROAGRESION, EVASION, CAIDA.
+CSV-AC
 
-VOCABULARIO TECNICO OBLIGATORIO:
-- Prosexia: euprosexica / hipoprosexica / euprosexico
-- Lenguaje: eulalico / laconico / hipolalico / coprolalia / leve disartria
-- Psicomotricidad: euquinetico / con inquietud motora / hiperquinetico
-- Afecto: modulado / labil / contenido / irritable / triste / ansioso / de fondo ansioso
-- Pensamiento: logico coherente / se infiere logico / desorganizado / asociacion laxa de ideas
-- Contenido: ideas sobrevaloradas de frustración / desesperanza / minusvalia / autorreproche / culpa / tristeza / soledad / ruina
-- Riesgo: fantasias de muerte / ideas de muerte / ideacion suicida / ideas de suicidio pobremente estructuradas / con mecanismos de corte
-- Psicosis: encapsulamiento de ideacion / ideacion delirante de paranoia / alucinaciones auditivas complejas / visuales
-- Insight: introspeccion conservada / parcial / precaria / pobre / nula
-- Prospeccion: hacia la mejoria / en elaboracion / incierta
-- Diagnosticos: TAB tipo I / Trastorno depresivo mayor / Trastorno adaptativo / TCS / Delirium hiperactivo / Patologia dual / Psicosis secundaria
-- Otros: dromomania / hiposomnia / hiporexia / anhedonia / astenia / adinamia / labilidad emocional / craving / heteroagresion / soliloquios
+EJEMPLO 2 (valoracion con familiar, cierre IC):
+RESPUESTA A INTERCONSULTA POR PSIQUIATRIA - VALORACION CON SU MADRE.
+Paciente femenina de 16 anos, natural, residente y procedente de Bogota, Cundinamarca. Vive con su madre y hermana. Es estudiante de Decimo grado.
+Paciente con antecedente de manejo por psiquiatria adicional presunto AS, con valoracion y manejo en Marzo de 2025, con indicacion de manejo en USM. Sin embargo, sin claridad de si se realizo manejo intrahospitalario. Actualmente en manejo con Risperidona 1 mg tab (0-0-0.5) y Sertralina 50 mg tab (1-0-0).
+Paciente con cuadro clinico de 2 meses de evolucion, que se intensifica en las ultimas semanas dado por ansiedad flotante, animo triste, afecto ansioso, labilidad emocional, llanto profundo, anhedonia, astenia y adinamia, aislamiento social, aprehension por asistir al colegio. Adicional episodios de ansiedad desbordante que se acompanan de sintomas como ideas sobrevaloradas de tristeza, desesperanza, minusvalia, culpa, autoreproche e ideas de muerte, con ideas de suicidio pobremente estructuradas con mecanismos de corte. Con episodio el dia sabado de laceracion a nivel de su antebrazo, con fines suicidas, con muy pobre critica y sin encontrar factores protectores.
+EXAMEN MENTAL:
+Se encuentra a paciente, en compania de su madre, con adecuada higiene y acorde al contexto hospitalario, alerta, contactado con el entorno, orientada en tres esferas, hipoporsexico, laconica, euquinetica, con afecto triste, contenido, resonante y congruente con el discurso. Pensamiento logico, coherente, con ideas sobrevaloradas de desesperanza, frustracion y autorreproche; con ideas de muerte, sin ideas de suicidio. pobre critica a laceracion previa. No impresiona actitud alucinatoria. inteligencia impresiona, juicio y raciocinio debilitado, introspeccion precaria, prospeccion incierta.
+ANALISIS:
+Paciente femenina de 16 anos, quien tiene antecedente de Trastorno depresivo y ha presentado cambios afectivos, con sintomas depresivos francos, que han afectado su funcionalidad y adicional fantasias de muerte y de suicidio, actualmente con reciente laceracion que segun verbaliza la paciente es con fines autolesivos. A la valoracion, persiste triste, contenido, con minimizacion de sus sintomas; impresionando marcados rasgos de personalidad, con pobres mecanismos de afrontamiento a situaciones de frustracion. Por lo anterior y teniendo en cuenta el alto riesgo de suicidio, autolesivo, considero manejo y remision a USM. Se titula dosis de sertralina y ajuste de risperidona por marcada impulsividad. Se explica conducta a paciente y a su madre, quienes entienden y aceptan.
+PLAN:
+Remision a USM
+Sertralina 50 mg tab (1.5-0-0)
+Risperidona 1 mg tab (0.25-0-1)
+Vigilancia por alto riesgo de suicidio.
+Se cierra IC- Recomendaciones y signos de alarma para reconsultar.
 
-REGLAS ADICIONALES:
-- Usar *** para datos que el medico debe completar
-- Medicamentos con nombre generico + dosis + forma farmaceutica + posologia entre parentesis
-- Ejemplos posologia: (1-0-1) / (0-0-1) / (1-1-1) / (0-0-10 gotas) / (3-0-5) / (1.5-0-0)
-- Si hay indicacion especial agregarla despues: "Tomar 1 tableta adicional si hay insomnio"
-- Urgencia: "Si agitacion aplicar - (Haloperidol Xmg / midazolam Xmg) im"
-- Tono clinico formal, tercera persona
-- FIDELIDAD TOTAL AL RELATO: Usa ABSOLUTAMENTE TODOS los datos, sintomas, verbalizaciones, medicamentos, nombres, fechas y detalles que aparezcan en el relato. NUNCA omitas, resumas ni ignores ningun dato mencionado. Si el relato dice algo, debe aparecer en la historia.
-- Si el relato menciona verbalizaciones del paciente o familiar, inclyuelas entre comillas en el cuadro clinico.
-- Si el relato menciona medicamentos especificos, inclyuelos exactamente en el plan.
-- Solo devuelve la historia clinica. Sin explicaciones, sin backticks, sin comentarios.`;
+EJEMPLO 3 (cierre IC, sin remision, control ambulatorio):
+RESPUESTA A INTERCONSULTA POR PSIQUIATRIA - VALORACION SIN ACOMPANANTE.
+Paciente femenina de 28 anos, natural de Aguachica Cesar, residente y procedente de Bogota. Vive Sola. Es asesora de ventas. Red de apoyo: Madre y hermanos que residen en Bogota DC.
+Paciente con antecedente de hipertiroidismo, actualmente en manejo por mal control del mismo. Quien tiene antecedente de Trastorno mixto de ansiedad y depresion, por lo cual interconsulta.
+Refiere cuadro clinico de sintomas ansiosos, con ansiedad flotante, animo triste, labilidad emocional, ideas sobrevaloradas de frustracion, tristeza y algunas en torno a duelo por fallecimiento de su hijo de 4 meses hace 20 dias. Refiere que secundario a lo anterior, presento alteracion en su patron del sueno, con insomnio de conciliacion, por lo cual esta en manejo con trazodona. Niega cambios en su funcionalidad. Refiere que a partir de su duelo ha implementado practicas de oracion, las cuales alivian su malestar emocional. Niega ideas de muerte o de suicidio actualmente, niega ideas de auto o hetero agresion, niega sintomas psicoticos, niega sintomas maniformes, niega conductas de riesgo, niega otros sintomas.
+EXAMEN MENTAL:
+Se encuentra a paciente en su habitacion y sin acompanante. Se encuentra con adecuada higiene y acorde al contexto hospitalario, alerta, contactado con el entorno, orientada en tres esferas, euprosexica, eulalica, euquinetico. Con afecto ansioso modulado, resonante y congruente con el discurso. Pensamiento logico, coherente, con ideas sobrevaloradas de preocupacion futura. Niega ideas de muerte, sin ideas de suicidio activa. No presenta ideacion delirante durante la valoracion. No actitud alucinatoria. inteligencia impresiona promedio, introspeccion parcial, prospeccion en elaboracion.
+ANALISIS:
+Paciente femenina de 28 anos, con antecedentes descritos, en manejo por hipotiroidismo mal controlado. Paciente quien desde el punto de vista de psiquiatria, ha presentado sintomatologia afectiva, secundaria a duelo por fallecimiento de su hijo. Adicional con sintomas de ansiedad que al parecer son secundarios a desregulacion tiroidea. En el momento cursando con duelo, por lo cual considero continuar unicamente manejo con trazodona y titular la dosis en caso de insomnio. Considero de importancia la psicoterapia individual por psicologia. Se indica continuar apoyo con psicologia. Se brindan signos de alarma y recomendaciones para consultar de forma prioritaria, sensibilizando en rutas de atencion por salud mental. Paciente entiende, acepta y resuelve dudas.
+PLAN:
+Se cierra interconsulta.
+Trazodona 50 mg tab (0-0-1). Tomar 1 tableta adicional si hay insomnio.
+Control ambulatorio por psiquiatria.
+Continuar con las intervenciones por psicologia. PRIORITARIA.
+Recomendaciones y signos de alarma para consultar.
+
+REGLAS ABSOLUTAS:
+1. FIDELIDAD TOTAL: Usa TODOS los datos del relato sin omitir nada. Cada sintoma, verbalizacion, medicamento, fecha, nombre y detalle debe aparecer en la historia.
+2. Incluye verbalizaciones textuales del paciente o familiar entre comillas dentro del cuadro clinico.
+3. Las negaciones van al final del cuadro clinico: "Niega ideas de muerte o de suicidio actualmente, niega ideas de auto o hetero agresion, niega sintomas psicoticos, niega sintomas maniformes, niega conductas de riesgo."
+4. EXAMEN MENTAL:, ANALISIS: y PLAN: son titulos separados en mayusculas.
+5. Medicamentos con nombre generico + dosis + forma farmaceutica + posologia entre parentesis.
+6. Usar *** solo para datos completamente desconocidos.
+7. Tono clinico formal, tercera persona, mismo nivel de detalle que los ejemplos.
+8. Solo devuelve la historia. Sin explicaciones, sin backticks, sin comentarios previos.`;
 // Init
 window.addEventListener('load', () => {
   const saved = localStorage.getItem(APPS_SCRIPT_URL_KEY);
@@ -645,7 +640,9 @@ function startRec() {
       if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
       else interim += e.results[i][0].transcript;
     }
-    document.getElementById('transcript').value = final + interim;
+    const ta = document.getElementById('transcript');
+    ta.value = final + interim;
+    ta.scrollTop = ta.scrollHeight;
   };
 
   recog.onerror = e => {
