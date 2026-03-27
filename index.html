@@ -393,7 +393,7 @@
       </div>
     </div>
     <div class="card-body">
-      <textarea id="transcript" class="transcript" placeholder="Graba la voz o escribe el relato aquí..."></textarea>
+      <textarea id="transcript" class="transcript" placeholder="Graba la voz o escribe el relato aquí..." oninput="onTranscriptInput()"></textarea>
 
       <div class="pipeline" id="pipeline" style="display:none;">
         <div class="pipe-step"><div class="pipe-dot done" id="p1"></div><span>Audio</span></div>
@@ -405,8 +405,8 @@
 
       <div class="btn-row">
         <button class="btn" id="btn-rec" onclick="toggleRec()"><span class="rec-pulse"></span> Grabar voz</button>
-        <button class="btn primary" onclick="generarYCrear()">Generar + Doc ↗</button>
-        <button class="btn" onclick="soloGenerar()">Solo historia</button>
+        <button class="btn primary" id="btn-finalizar" onclick="finalizarYCrear()" style="display:none;">Finalizar y crear historia ↗</button>
+        <button class="btn" id="btn-solo" onclick="soloFinalizar()" style="display:none;">Solo historia</button>
       </div>
       <div class="status-line" id="status-main">Graba el relato — al detener, se genera la historia y el Doc automáticamente.</div>
       <div id="doc-link-area"></div>
@@ -686,7 +686,7 @@ function startRec() {
     recOn = true; recSec = 0;
     const btn = document.getElementById('btn-rec');
     btn.className = 'btn recording-btn';
-    btn.innerHTML = '<span class="rec-pulse"></span> Detener y generar';
+    btn.innerHTML = '<span class="rec-pulse"></span> Pausar';
     document.getElementById('rec-badge').className = 'badge red recording';
     document.getElementById('rec-badge').innerHTML = '<span class="rec-pulse"></span> Grabando';
     recInt = setInterval(() => {
@@ -714,11 +714,11 @@ function startRec() {
     stopRec(false);
   };
 
-  recog.onend = () => { if (recOn) stopRec(true); };
+  recog.onend = () => { if (recOn) stopRec(); };
   recog.start();
 }
 
-function stopRec(autoGenerar) {
+function stopRec() {
   recOn = false;
   if (recog) recog.stop();
   clearInterval(recInt);
@@ -728,10 +728,8 @@ function stopRec(autoGenerar) {
   document.getElementById('rec-badge').className = 'badge green';
   document.getElementById('rec-badge').innerHTML = 'Listo ✓';
   document.getElementById('rec-timer').textContent = '';
-  if (autoGenerar) {
-    setStatus('Grabación terminada. Generando historia...', 'loading');
-    generarYCrear();
-  }
+  document.getElementById('btn-finalizar').style.display = '';
+  setStatus('Grabación pausada. Puedes seguir grabando o finalizar.', 'ok');
 }
 
 function setPipe(step, state) {
@@ -776,6 +774,24 @@ async function callGemini(systemPrompt, userMsg) {
   const data = await res.json();
   if (!res.ok) throw new Error(data.error ? data.error.message : JSON.stringify(data));
   return data.choices[0].message.content.trim();
+}
+
+function onTranscriptInput() {
+  const hasText = document.getElementById('transcript').value.trim().length > 0;
+  document.getElementById('btn-finalizar').style.display = hasText ? '' : 'none';
+  document.getElementById('btn-solo').style.display = hasText ? '' : 'none';
+}
+
+function finalizarYCrear() {
+  document.getElementById('btn-finalizar').style.display = 'none';
+  document.getElementById('btn-solo').style.display = 'none';
+  generarYCrear();
+}
+
+function soloFinalizar() {
+  document.getElementById('btn-finalizar').style.display = 'none';
+  document.getElementById('btn-solo').style.display = 'none';
+  soloGenerar();
 }
 
 async function generarYCrear() {
@@ -954,6 +970,8 @@ function limpiarTodo() {
   document.getElementById('btn-send-doc').style.display = 'none';
   document.getElementById('rec-badge').className = 'badge amber';
   document.getElementById('rec-badge').innerHTML = '<span class="rec-pulse"></span> Listo';
+  document.getElementById('btn-finalizar').style.display = 'none';
+  document.getElementById('btn-solo').style.display = 'none';
   document.getElementById('rec-timer').textContent = '';
   setStatus('Listo para nuevo paciente.', '');
   document.getElementById('status-export').textContent = '';
