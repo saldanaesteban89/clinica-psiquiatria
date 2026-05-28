@@ -328,12 +328,12 @@
     </div>
     <div class="collapse-body" id="config-body">
       <div style="margin-bottom:12px;">
-        <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Groq</label>
+        <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Gemini</label>
         <div style="display:flex;gap:8px;">
-          <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;font-family:var(--font-mono,monospace);font-size:12px;" oninput="onGeminiKeyInput()">
+          <input type="password" id="gemini-key-input" placeholder="Pega tu API key aqui..." style="flex:1;font-family:var(--font-mono,monospace);font-size:12px;" oninput="onGeminiKeyInput()">
           <button class="btn" onclick="toggleKeyVisibility()">Ver</button>
         </div>
-        <div class="status-line" id="gemini-key-status">Pega tu API key de console.groq.com — empieza con gsk_... — se guarda solo en tu navegador.</div>
+        <div class="status-line" id="gemini-key-status">Pega tu API key de aistudio.google.com/apikey — empieza con gsk_... — se guarda solo en tu navegador.</div>
       </div>
       <div class="webhook-row">
         <input type="url" id="webhook-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="onUrlInput()">
@@ -457,64 +457,59 @@
 const APPS_SCRIPT_URL_KEY = 'colsubsidio_script_url';
 let recog = null, recOn = false, recInt = null, recSec = 0;
 
-const PROMPT_SISTEMA = `Eres una psiquiatra que redacta interconsultas hospitalarias en Colombia. Imita exactamente el estilo de estos ejemplos reales. NUNCA uses comillas en el texto.
+const PROMPT_SISTEMA = `Eres una psiquiatra colombiana. Tu trabajo es organizar lo que te dictan en una historia clinica profesional, imitando exactamente el estilo de estos ejemplos reales. NUNCA uses comillas en el texto.
 
-=== EJEMPLO 1 (caso grave con remision) ===
-RESPUESTA A INTERCONSULTA POR PSIQUIATRIA - HOSPITALIZACION* paciente mal informante SIN ACOMPANANTE- SE REALIZA COMUNICACION CON SU FAMILIAR VIA TELEFONICA- SENOR JOSE MARIN
+=== EJEMPLO 1 (cierre IC, manejo ambulatorio) ===
+RESPUESTA A INTERCONSULTA POR PSIQUIATRIA
+Paciente femenina de 23 anos, natural de cartagena, residente y procedente de Bogota DC, es bachiller, actualmente labora en restaurante. Vive con su hija de 5 anos. Actualmente se encuentra en manejo por estenosis traqueal.
 
-Paciente femenina de 31 anos. Vive con sus padres e hija de 14 anos. Es trabajadora social de profesion, actualmente cesante por su patologia.
+Paciente con antecedente de T. depresivo depresivo, con requerimiento de hospitalizacion en 2 ocasiones en Health and life, la ultima en febrero de 2026 por intoxicacion exogena con quetiapina (30 tabletas de 100mg). Se habia indicado manejo con Sertralina 100 mg y quetiapina 100 mg tab (0-0-1), sin embargo, por dificultad en los controles, no ha sido adherente con regularidad al manejo.
 
-Paciente con antecedente al parecer de Trastorno afectivo bipolar, desde hace 6 anos y asociado a consumo de SPA (Cannabis, cocaina y bazuco). Ha requerido 2 hospitalizaciones en USM, la ultima hace 30 dias en Hospital La Victoria. Egreso con: Litio 300 mg tab (1-1-1), Risperidona 1 mg tab (2-0-2) y levomepromazina 4% (0-0-10 gotas).
-
-Su padre refiere cuadro clinico de 12 dias de evolucion consistente en cambios comportamentales, irritabilidad, la mayor parte del dia y todos los dias, con aumento de actividad intencionada, episodios de dromomania, con conductas de riesgo como salir de su casa y deambular a altas horas de la noche. Adicional conductas de heteroagresion fisica y verbal hacia sus cuidadores, con ideas delirante de paranoia, discurso desorganizado, asociacion laxa de ideas; con alucinaciones auditivas complejas y coprolalia. En cuanto al patron del sueno con hiposomnia.
+Refiere que actualmente presenta modulacion afectiva, sin episodios de panicos, sin episodios desbordante, sin ideacion de muerte o de suicidio. Una vez ha iniciado su actividad laboral, hay sensacion de bienestar. Tiene alteracion en el patron del sueno, aunque en manejo con quetiapina, logra continuarlo. Tiene adecuado patron alimentario.
+Niega sintomas psicoticos, maniformes, ideas de auto o heteroagresion. Niega ideas de muerte o de suicidio.
 
 EXAMEN MENTAL:
-Se encuentra en camilla. Luce con aceptable higiene y presentacion personal, alerta, orientada en tres esferas, con inquietud motora, actitud de suspicacia. No establece contacto visual, verbal a demanda. Con afecto irritable, contenido, resonante y congruente con el discurso. Pensamiento se infiere logico, interrumpe la entrevista y no colabora mas. impresiona encapsulamiento de ideacion. inteligencia impresiona promedio, juicio y raciocinio desviado, introspeccion nula, prospeccion incierta.
+Se encuentra a la paciente en su habitacion, en compania de su madre. Con adecuada higiene y acorde al contexto hospitalario, alerta, contactado con el entorno, orientado en tres esferas, euprosexica, eulalico, euquinetico, con afecto modulado, resonante y congruente con el discurso. Pensamiento logico, coherente, con ideas sobrevaloradas de preocupacion por retornar a su trabajo. Niega ideas de muerte, de suicidio o de autoagresion. No verbaliza ideacion delirante. No impresiona actitud alucinatoria. inteligencia impresiona, juicio y raciocinio conservado, introspeccion parcial, prospeccion hacia la mejoria.
 
 ANALISIS:
-Paciente femenina de 31 anos, con patologia dual, al parecer antecedente de TAB tipo I y consumo de SPA. Paciente quien presenta cuadro clinico de sintomatologia aguda, consistente en sintomas psicoticos positivos y maniformes; con sintomas que han interferido en su funcionalidad con conductas de riesgo, abandono de sus actividades cotidianas y episodios de heteroagresion a 3eros. En el momento tiene mala adherencia al esquema de manejo; por lo cual indico remision a USM, considero probabilidad de iniciar medicamento de deposito, para garantizar mayor adherencia al manejo y estabilidad clinica. Se indica remision y se explica conducta al padre de la paciente, quien entiende y acepta.
+Paciente femenina de 23 anos, actualmente en manejo por estenosis traqueal. Paciente con antecedente de T. depresivo; actualmente con remision de sus sintomas afectivos, con remision de su ideacion de muerte y/o suicidio. Actualmente con mejoria en su funcionalidad, con deseo de continuar controles, mayor insight de sus sintomas y cuadro clinico. No ha presentado conductas de alto riesgo o impulsivas que afectan su integridad. En el momento considero reiniciar manejo farmacologico y continuar manejo de forma ambulatoria con control en 15 dias por psiquiatria y con signos de alarma. Se resuelven dudas y se cierra IC.
 
 PLAN:
-REMISION A USM.
-Risperidona 3 mg tab (0-0-1)
-Carbonato de litio 300 mg tab (1-0-2)
-Levomepromazina al 4 % (5-5-15)
-Acompanamiento permanente por su familiar.
-Si agitacion aplicar - (Haloperidol 5 mg / midazolam 5mg) im
-Vigilar alto riesgo de HETEROAGRESION, EVASION, CAIDA.
-CSV-AC
-
-=== EJEMPLO 2 (caso leve, cierre IC) ===
-RESPUESTA A INTERCONSULTA POR PSIQUIATRIA - VALORACION SIN ACOMPANANTE.
-
-Paciente femenina de 28 anos, natural de Aguachica Cesar, residente y procedente de Bogota. Vive sola. Es asesora de ventas. Red de apoyo: Madre y hermanos que residen en Bogota DC.
-
-Paciente con antecedente de hipertiroidismo, actualmente en manejo por mal control del mismo. Quien tiene antecedente de Trastorno mixto de ansiedad y depresion, por lo cual interconsulta.
-
-Refiere cuadro clinico de sintomas ansiosos, con ansiedad flotante, animo triste, labilidad emocional, ideas sobrevaloradas de frustracion, tristeza y algunas en torno a duelo por fallecimiento de su hijo de 4 meses hace 20 dias. Refiere que secundario a lo anterior, presento alteracion en su patron del sueno, con insomnio de conciliacion, por lo cual esta en manejo con trazodona. Niega cambios en su funcionalidad.
-Niega ideas de muerte o de suicidio actualmente, niega ideas de auto o hetero agresion, niega sintomas psicoticos, niega sintomas maniformes, niega conductas de riesgo, niega otros sintomas.
-
-EXAMEN MENTAL:
-Se encuentra a paciente en su habitacion y sin acompanante. Se encuentra con adecuada higiene y acorde al contexto hospitalario, alerta, contactado con el entorno, orientada en tres esferas, euprosexica, eulalica, euquinetico. Con afecto ansioso modulado, resonante y congruente con el discurso. Pensamiento logico, coherente, con ideas sobrevaloradas de preocupacion futura. Niega ideas de muerte, sin ideas de suicidio activa. No presenta ideacion delirante durante la valoracion. No actitud alucinatoria. inteligencia impresiona promedio, introspeccion parcial, prospeccion en elaboracion.
-
-ANALISIS Y PLAN:
-Paciente femenina de 28 anos, con antecedentes descritos, en manejo por hipotiroidismo mal controlado. Paciente quien desde el punto de vista de psiquiatria, ha presentado sintomatologia afectiva, secundaria a duelo por fallecimiento de su hijo. Adicional con sintomas de ansiedad que al parecer son secundarios a desregulacion tiroidea. En el momento cursando con duelo, por lo cual considero continuar unicamente manejo con trazodona y titular la dosis en caso de insomnio. Considero de importancia la psicoterapia individual por psicologia. Se brindan signos de alarma y recomendaciones para consultar de forma prioritaria. Paciente entiende, acepta y resuelve dudas.
-
-PLAN:
-Se cierra interconsulta.
-Trazodona 50 mg tab (0-0-1). Tomar 1 tableta adicional si hay insomnio.
-Control ambulatorio por psiquiatria.
-Continuar con las intervenciones por psicologia. PRIORITARIA.
+Se cierra IC por psiquiatria
+Sertralina 50 mg tab (1-0-0)
+Quetiapina 25 mg tab (0-0-2)
+Control ambulatorio por psiquiatria en 15 dias
+Control ambulatorio por psicologia- Semanal.
 Recomendaciones y signos de alarma para consultar.
 
-=== REGLAS ===
-1. Usa TODOS los datos del relato sin omitir nada.
-2. NUNCA uses comillas en el texto. Las verbalizaciones van con dos puntos: Refiere: se puso a decir cosas.
-3. EXAMEN MENTAL:, ANALISIS: y PLAN: son titulos separados en mayusculas.
-4. Medicamentos: nombre generico + dosis + forma + posologia entre parentesis. NO cambies medicamentos ni dosis que te dictan.
-5. Negaciones al final del cuadro clinico antes del examen mental.
-6. NO cambies la conducta: si dictan salida es salida, si dictan hospitalizacion es hospitalizacion.
-7. Usar *** para datos desconocidos.
+=== EJEMPLO 2 (remision USM, caso grave) ===
+RESPUESTA A INTERCONSULTA POR PSIQUIATRIA- VALORACION CON SU MADRE-CAROLINA CAICEDO NEIRA.
+Paciente femenina de 14 anos, natural, residente y procedente de Bogota, Cundinamarca. Vive con su tia y primas. Como escolaridad culmino octavo grado.
+
+Paciente con antecedente de manejo por psiquiatria, con Trastorno depresivo Mayor, con intento de suicidio hace 1 ano, con manejo en USM en clinica La Paz. Desde entonces en manejo con Sertralina 50 mg tab (1-0-0). Con intentos de cutting en multiples ocasiones. No ha tenido controles ambulatorios por dificultad en agendamiento de sus citas.
+
+Paciente con cuadro clinico de larga data de sintomas afectivos. Con cuadro clinico que inicia hace 5 anos, posterior al fallecimiento de su madre. Ha venido presentando dificultades a nivel de su colegio, con dificultad para acatar senalamientos y con conductas de heteroagresion hacia una de sus companeras. La paciente refiere que ha venido presentando concomitante incremento de animo triste, anhedonia, ideas sobrevaloradas de tristeza, soledad, culpa, ideas de muerte y con ideacion de suicidio con mecanismo de intoxicacion, con intento de suicidio hace 2 dias, con toma de 10 tabletas de sertralina, 3 acetaminofen y 2 dipironas. En cuanto al patron del sueno, con insomnio de conciliacion. En cuanto al patron alimentario, sin hiporexia.
+
+EXAMEN MENTAL:
+Se encuentra a paciente en compania de su tia. Luce con adecuada higiene y presentacion personal, alerta, orientado en tres esferas, eulalica, euprosexica, euquinetico. Con afecto de fondo ansioso, triste, contenido, modulado, con ideas sobrevaloradas de desesperanza, tristeza, minimiza sus sintomas, con ideas de muerte e ideas de suicidio. No impresiona la actitud alucinatoria, niega alucinaciones auditivas. Juicio y raciocinio debilitado, introspeccion pobre, prospeccion incierta.
+
+ANALISIS.
+Paciente femenina de 14 anos, con antecedente de manejo por psiquiatria. Quien ha tenido intentos de suicidio previamente. Paciente quien viene presentando cuadro clinico consistente en cambios comportamentales agudos, asociado a sintomas afectivos que inician hace 5 anos y a raiz del fallecimiento de su madre. Ha venido presentando exacerbacion de conductas de heteroagresion y adicional sintomas depresivos, con reciente intento de suicidio, del cual hace pobre critica. Paciente con alto riesgo de suicidio, que considero debe continuar manejo en unidad de salud mental. Se explica al paciente y a su madre la conducta.
+
+PLAN:
+Remision a USM.
+Quetiapina 25 mg tab (0-0-1/2)
+Vigilancia por alto riesgo de heteroagresion, suicidio y acting.
+Se sugiere acompanamiento permanente por su familiar, y supervision de la toma de medicamentos.
+
+=== TU TRABAJO ===
+1. ORGANIZAR lo que te dictan en el formato de historia clinica de los ejemplos. Reorganiza la informacion en parrafos clinicos fluidos.
+2. EXAMEN MENTAL: Construyelo tu con vocabulario clinico (euprosexica, eulalico, euquinetico, afecto modulado/triste/ansioso, introspeccion, prospeccion) basandote en lo que te dictan del paciente.
+3. ANALISIS: Redactalo tu con razonamiento clinico, basandote en los datos dictados.
+4. PLAN: Transcribelo EXACTAMENTE como te lo dictan. NO cambies medicamentos, dosis, posologia ni conducta. Si dicen salida es salida. Si dicen hospitalizacion es hospitalizacion.
+5. NUNCA uses comillas. Verbalizaciones con dos puntos: Refiere: me senti muy mal.
+6. Las negaciones van al final del cuadro clinico.
+7. Usa *** para datos que no te dieron.
 8. Solo devuelve la historia. Sin explicaciones ni texto adicional.`;
 // Init
 window.addEventListener('load', () => {
@@ -542,7 +537,7 @@ window.addEventListener('load', () => {
 
 function onGeminiKeyInput() {
   const key = document.getElementById('gemini-key-input').value.trim();
-  if (key.startsWith('gsk_') && key.length > 20) {
+  if (key.length > 10) {
     localStorage.setItem('gemini_api_key', key);
     document.getElementById('gemini-key-status').textContent = 'API key guardada. Lista para usar.';
     document.getElementById('gemini-key-status').className = 'status-line ok';
@@ -550,7 +545,7 @@ function onGeminiKeyInput() {
     document.getElementById('conn-badge').textContent = 'Lista';
     document.getElementById('config-summary').textContent = 'API key configurada ✓';
   } else {
-    document.getElementById('gemini-key-status').textContent = 'La key debe empezar con gsk_...';
+    document.getElementById('gemini-key-status').textContent = 'Pega tu API key aqui';
     document.getElementById('gemini-key-status').className = 'status-line err';
   }
 }
@@ -687,26 +682,20 @@ function buildContexto() {
 
 async function callGemini(systemPrompt, userMsg) {
   const apiKey = localStorage.getItem('gemini_api_key');
-  if (!apiKey) throw new Error('Configura tu API key de Groq en la seccion de configuracion.');
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  if (!apiKey) throw new Error('Configura tu API key de Gemini en la seccion de configuracion.');
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + apiKey
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 1200,
-      temperature: 0.3,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMsg }
-      ]
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ parts: [{ text: userMsg }] }],
+      generationConfig: { maxOutputTokens: 1500, temperature: 0.2 }
     })
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error ? data.error.message : JSON.stringify(data));
-  return data.choices[0].message.content.trim();
+  if (!data.candidates || !data.candidates[0]) throw new Error('Gemini no devolvio respuesta.');
+  return data.candidates[0].content.parts[0].text.trim();
 }
 
 function onTranscriptInput() {
@@ -737,15 +726,10 @@ async function generarYCrear() {
   setPipe(1,'done'); setPipe(2,'active'); setPipe(3,'');
   setStatus('Generando historia clínica con IA...', 'loading');
 
-  const msg = `DATOS DEL CASO (usa estos como base clinica):
+  const msg = `DICTADO DEL CASO:
 ${texto}${buildContexto()}
 
-INSTRUCCIONES:
-- Usa los datos demograficos y clinicos del relato como base.
-- El cuadro clinico reformulalo en lenguaje psiquiatrico profesional, no lo transcribas literal.
-- El ANALISIS debe mostrar razonamiento clinico propio: diagnostico justificado, correlacion clinica, nivel de riesgo, decision terapeutica.
-- El PLAN debe ser completo y clinicamente apropiado para el diagnostico. Si no se mencionan medicamentos, propone los indicados.
-- La historia debe sonar como escrita por un psiquiatra experto, no como una transcripcion del relato.`;
+Organiza esto en historia clinica. El PLAN transcribelo exactamente como te lo dicte, sin cambiar medicamentos ni conducta.`;
   let historia = '';
 
   try {
@@ -775,7 +759,7 @@ async function soloGenerar() {
   const texto = document.getElementById('transcript').value.trim();
   if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
   setStatus('Generando historia...', 'loading');
-  const msg = `DATOS DEL CASO (usa estos como base clinica):
+  const msg = `DICTADO DEL CASO:
 ${texto}${buildContexto()}
 
 INSTRUCCIONES:
