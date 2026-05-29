@@ -2,477 +2,137 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>IC Psiquiatría — Colsubsidio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>IC Psiquiatría</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F7F6F2;
-    --surface: #FFFFFF;
-    --border: #E2E0D8;
-    --border-strong: #C8C5BB;
-    --text: #1A1917;
-    --text-2: #6B6860;
-    --text-3: #9B9890;
-    --accent: #1A1917;
-    --green: #0F6E56;
-    --green-bg: #EAF3DE;
-    --green-text: #27500A;
-    --blue: #185FA5;
-    --blue-bg: #E6F1FB;
-    --blue-text: #0C447C;
-    --red: #A32D2D;
-    --red-bg: #FCEBEB;
-    --amber-bg: #FAEEDA;
-    --amber-text: #633806;
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
-
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-inner {
-    max-width: 680px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .logo-mark {
-    width: 32px;
-    height: 32px;
-    background: var(--text);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .logo-mark svg { width: 18px; height: 18px; }
-
-  .logo-text {
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: -0.2px;
-  }
-
-  .logo-sub {
-    font-size: 11px;
-    color: var(--text-2);
-    font-weight: 400;
-  }
-
-  .main {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .card-header {
-    padding: 14px 18px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-body { padding: 12px 18px 16px; }
-
-  .section-label {
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-3);
-    margin-bottom: 12px;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 99px;
-    font-weight: 500;
-  }
-  .badge.amber { background: var(--amber-bg); color: var(--amber-text); }
-  .badge.green { background: var(--green-bg); color: var(--green-text); }
-  .badge.red { background: var(--red-bg); color: var(--red); }
-  .badge.blue { background: var(--blue-bg); color: var(--blue-text); }
-
-  .rec-pulse {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: currentColor;
-    display: inline-block;
-  }
-  .recording .rec-pulse { animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  textarea, input, select {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.15s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  textarea:focus, input:focus, select:focus { border-color: var(--border-strong); background: #fff; }
-  textarea { resize: vertical; line-height: 1.6; }
-  textarea.transcript { min-height: 120px; max-height: 260px; overflow-y: auto; resize: none; }
-  textarea.historia { min-height: 300px; font-size: 13px; line-height: 1.75; font-family: 'DM Mono', monospace; }
-
-  .btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 10px 18px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-strong);
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    transition: all 0.12s;
-    white-space: nowrap;
-    -webkit-appearance: none;
-  }
-  .btn:hover { background: var(--bg); }
-  .btn:active { transform: scale(0.97); }
-  .btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
-  .btn.primary:hover { opacity: 0.85; background: var(--text); }
-  .btn.danger { border-color: #E24B4A; color: var(--red); }
-  .btn.recording-btn { border-color: #E24B4A; color: var(--red); background: var(--red-bg); }
-  .btn:disabled { opacity: 0.4; pointer-events: none; }
-  .btn.full { width: 100%; justify-content: center; }
-
-  .btn-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
-  .status-line {
-    font-size: 12px;
-    color: var(--text-2);
-    margin-top: 8px;
-    min-height: 20px;
-    line-height: 1.5;
-  }
-  .status-line.ok { color: var(--green); }
-  .status-line.err { color: var(--red); }
-  .status-line.loading { color: var(--blue); }
-
-  .fields-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .fg { display: flex; flex-direction: column; gap: 5px; }
-  .fg.full { grid-column: 1 / -1; }
-  label { font-size: 11px; color: var(--text-2); font-weight: 500; }
-
-  .pipeline {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 0 4px;
-    flex-wrap: wrap;
-  }
-  .pipe-step { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
-  .pipe-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-strong); flex-shrink: 0; }
-  .pipe-dot.done { background: var(--green); }
-  .pipe-dot.active { background: var(--blue); animation: pulse 1s infinite; }
-  .pipe-dot.err { background: var(--red); }
-  .pipe-arrow { font-size: 10px; color: var(--border-strong); }
-
-  .doc-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 16px;
-    background: var(--green-bg);
-    color: var(--green-text);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    border: 1px solid #9FE1CB;
-    margin-top: 12px;
-    width: 100%;
-    justify-content: center;
-  }
-
-  .tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    padding: 0 18px;
-  }
-  .tab {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    padding: 12px 16px 10px;
-    border: none;
-    background: none;
-    color: var(--text-2);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    font-weight: 400;
-  }
-  .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
-
-  .divider { height: 1px; background: var(--border); margin: 14px 0; }
-
-  .timer-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--text-2);
-  }
-
-  .webhook-row { display: flex; gap: 8px; align-items: stretch; }
-  .webhook-row input { flex: 1; font-size: 12px; font-family: 'DM Mono', monospace; }
-  .webhook-row .btn { flex-shrink: 0; }
-
-  .config-collapsed { padding: 14px 18px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
-  .config-collapsed .arrow { font-size: 12px; color: var(--text-3); transition: transform 0.2s; }
-  .config-collapsed.open .arrow { transform: rotate(180deg); }
-
-  .collapse-body { padding: 0 18px 16px; display: none; }
-  .collapse-body.open { display: block; }
-
-  @media (max-width: 480px) {
-    .fields-grid { grid-template-columns: 1fr; }
-    .fg.full { grid-column: 1; }
-    .btn-row { gap: 6px; }
-    .btn { font-size: 12px; padding: 9px 14px; }
-  }
+:root{--bg:#F5F4F0;--card:#FFF;--border:#E0DED6;--text:#1A1917;--text2:#6B6860;--text3:#9B9890;--green:#0F6E56;--green-bg:#E8F5E9;--blue:#1565C0;--blue-bg:#E3F2FD;--red:#C62828;--red-bg:#FFEBEE;--amber-bg:#FFF8E1;--amber-text:#6D4C00;--r:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;position:sticky;top:0;z-index:100}
+.hdr{max-width:700px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:30px;height:30px;background:var(--text);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:16px;height:16px}
+.logo-name{font-size:15px;font-weight:600}
+.logo-sub{font-size:11px;color:var(--text2)}
+.badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500}
+.badge-g{background:var(--green-bg);color:var(--green)}.badge-a{background:var(--amber-bg);color:var(--amber-text)}.badge-r{background:var(--red-bg);color:var(--red)}.badge-b{background:var(--blue-bg);color:var(--blue)}
+.main{max-width:700px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.card-h{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.card-b{padding:0 16px 14px}
+.lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+textarea,input,select{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;outline:none;-webkit-appearance:none}
+textarea:focus,input:focus,select:focus{border-color:#999;background:#fff}
+textarea{resize:vertical;line-height:1.6}
+.ta-voice{min-height:100px;max-height:250px;overflow-y:auto}
+.ta-hist{min-height:280px;font-size:13px;font-family:'DM Mono',monospace;line-height:1.7}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-rec{border-color:var(--red);color:var(--red);background:var(--red-bg);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.st{font-size:12px;color:var(--text2);margin-top:6px;min-height:18px;line-height:1.5}
+.st-ok{color:var(--green)}.st-err{color:var(--red)}.st-load{color:var(--blue)}
+.pipe{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);padding:8px 0;flex-wrap:wrap}
+.pd{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.pd-ok{background:var(--green)}.pd-on{background:var(--blue);animation:pulse 1s infinite}.pd-err{background:var(--red)}
+.doc-link{display:block;padding:10px;background:var(--green-bg);color:var(--green);border-radius:6px;font-size:13px;font-weight:500;text-decoration:none;text-align:center;margin-top:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fg{display:flex;flex-direction:column;gap:4px}.fg.f{grid-column:1/-1}
+label{font-size:11px;color:var(--text2);font-weight:500}
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 16px}
+.tab{font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 14px;border:none;background:none;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+.collapse{display:none}.collapse.open{display:block}
+.arrow{font-size:10px;color:var(--text3);transition:transform .2s}
+.open>.arrow{transform:rotate(180deg)}
+.cfg-row{display:flex;gap:8px;margin-bottom:8px}
+.cfg-row input{flex:1;font-size:12px;font-family:'DM Mono',monospace}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.fg.f{grid-column:1}}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="header-inner">
-    <div class="logo">
-      <div class="logo-mark">
-        <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 2v14M2 9h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="9" cy="9" r="3" fill="white"/>
-        </svg>
-      </div>
-      <div>
-        <div class="logo-text">IC Psiquiatría</div>
-        <div class="logo-sub">Colsubsidio</div>
-      </div>
-    </div>
-    <div id="conn-badge" class="badge amber">Sin configurar</div>
-  </div>
-</header>
-
-<div class="main">
-
-  <!-- Config card -->
-  <div class="card">
-    <div class="config-collapsed" id="config-toggle" onclick="toggleConfig()">
-      <div>
-        <div class="section-label" style="margin-bottom:2px;">Configuración</div>
-        <div style="font-size:13px;color:var(--text-2);" id="config-summary">URL de Google Apps Script</div>
-      </div>
-      <div class="arrow" id="config-arrow">▼</div>
-    </div>
-    <div class="collapse-body" id="config-body">
-      <div style="margin-bottom:12px;">
-        <label style="font-size:11px;color:var(--text-2);font-weight:500;display:block;margin-bottom:5px;">API Key de Gemini</label>
-        <div style="display:flex;gap:8px;">
-          <input type="password" id="gemini-key-input" placeholder="Pega tu API key aqui..." style="flex:1;font-family:var(--font-mono,monospace);font-size:12px;" oninput="onGeminiKeyInput()">
-          <button class="btn" onclick="toggleKeyVisibility()">Ver</button>
-        </div>
-        <div class="status-line" id="gemini-key-status">Pega tu API key de aistudio.google.com/apikey — empieza con gsk_... — se guarda solo en tu navegador.</div>
-      </div>
-      <div class="webhook-row">
-        <input type="url" id="webhook-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="onUrlInput()">
-        <button class="btn" onclick="probarWebhook()">Probar</button>
-      </div>
-      <div class="status-line" id="webhook-status">Pega la URL de tu Apps Script.</div>
-    </div>
-  </div>
-
-  <!-- Datos complementarios -->
-  <div class="card">
-    <div class="config-collapsed" id="datos-toggle" onclick="toggleDatos()">
-      <div>
-        <div class="section-label" style="margin-bottom:2px;">Datos de la consulta</div>
-        <div style="font-size:13px;color:var(--text-2);">Diagnóstico, tipo de IC, medicamentos</div>
-      </div>
-      <div class="arrow" id="datos-arrow">▼</div>
-    </div>
-    <div class="collapse-body" id="datos-body">
-      <div class="fields-grid">
-        <div class="fg">
-          <label>Diagnóstico principal</label>
-          <input type="text" id="dx" placeholder="Ej: DELIRIUM, DEPRESIÓN...">
-        </div>
-        <div class="fg">
-          <label>Tipo de interconsulta</label>
-          <select id="tipo_ic">
-            <option value="RESPUESTA A INTERCONSULTA POR PSIQUIATRÍA">Interconsulta psiquiatría</option>
-            <option value="INTERCONSULTA POR PSIQUIATRÍA">Interconsulta (urgente)</option>
-            <option value="CONTROL AMBULATORIO POR PSIQUIATRÍA">Control ambulatorio</option>
-            <option value="VALORACIÓN INICIAL POR PSIQUIATRÍA">Valoración inicial</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label>Valoración realizada con</label>
-          <input type="text" id="valoracion_con" placeholder="Ej: su esposo (José Niño)">
-        </div>
-        <div class="fg">
-          <label>Medicamentos del plan</label>
-          <input type="text" id="meds" placeholder="Ej: Quetiapina 25mg (0-0-1)">
-        </div>
-        <div class="fg full">
-          <label>Contexto hospitalario</label>
-          <input type="text" id="ctx_hosp" placeholder="Ej: en manejo por IVU con choque séptico...">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Grabación -->
-  <div class="card">
-    <div class="card-header">
-      <div class="section-label" style="margin-bottom:0;">Relato del paciente / familiar</div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="timer-badge" id="rec-timer"></span>
-        <span id="rec-badge" class="badge amber"><span class="rec-pulse"></span> Listo</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <textarea id="transcript" class="transcript" placeholder="Graba la voz o escribe el relato aquí..." oninput="onTranscriptInput()"></textarea>
-
-      <div class="pipeline" id="pipeline" style="display:none;">
-        <div class="pipe-step"><div class="pipe-dot done" id="p1"></div><span>Audio</span></div>
-        <div class="pipe-arrow">›</div>
-        <div class="pipe-step"><div class="pipe-dot" id="p2"></div><span id="p2t">Generando historia</span></div>
-        <div class="pipe-arrow">›</div>
-        <div class="pipe-step"><div class="pipe-dot" id="p3"></div><span id="p3t">Creando Doc</span></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn" id="btn-rec" onclick="toggleRec()"><span class="rec-pulse"></span> Grabar voz</button>
-        <button class="btn primary" id="btn-finalizar" onclick="finalizarYCrear()" style="display:none;">Finalizar y crear historia ↗</button>
-        <button class="btn" id="btn-solo" onclick="soloFinalizar()" style="display:none;">Solo historia</button>
-      </div>
-      <div class="status-line" id="status-main">Graba el relato — al detener, se genera la historia y el Doc automáticamente.</div>
-      <div id="doc-link-area"></div>
-    </div>
-  </div>
-
-  <!-- Resultado -->
-  <div class="card">
-    <div class="tabs">
-      <button class="tab active" id="tab-btn-historia" onclick="switchTab('historia',this)">Historia generada</button>
-      <button class="tab" id="tab-btn-campos" onclick="switchTab('campos',this)">Campos</button>
-    </div>
-
-    <div id="tab-historia" class="card-body">
-      <textarea id="historia-out" class="historia" placeholder="La historia clínica aparecerá aquí..."></textarea>
-      <div class="btn-row">
-        <button class="btn primary" onclick="copiarHistoria()">Copiar</button>
-        <button class="btn" id="btn-send-doc" onclick="enviarADoc()" style="display:none;">Guardar en Drive ↗</button>
-        <button class="btn" onclick="limpiarTodo()" style="margin-left:auto;">Limpiar todo</button>
-      </div>
-      <div class="status-line" id="status-export"></div>
-    </div>
-
-    <div id="tab-campos" class="card-body" style="display:none;">
-      <div class="fields-grid">
-        <div class="fg"><label>Nombre</label><input id="c_nombre" type="text" placeholder="—"></div>
-        <div class="fg"><label>Edad / Sexo</label><input id="c_edad" type="text" placeholder="—"></div>
-        <div class="fg"><label>Origen</label><input id="c_origen" type="text" placeholder="—"></div>
-        <div class="fg"><label>Residencia</label><input id="c_residencia" type="text" placeholder="—"></div>
-        <div class="fg"><label>Ocupación</label><input id="c_ocupacion" type="text" placeholder="—"></div>
-        <div class="fg"><label>Religión</label><input id="c_religion" type="text" placeholder="—"></div>
-        <div class="fg full"><label>Situación familiar</label><input id="c_familia" type="text" placeholder="—"></div>
-        <div class="fg full"><label>Motivo de consulta</label><textarea id="c_motivo" style="min-height:60px;" placeholder="—"></textarea></div>
-        <div class="fg full"><label>Antecedentes</label><textarea id="c_antecedentes" style="min-height:60px;" placeholder="—"></textarea></div>
-        <div class="fg full"><label>Cuadro clínico</label><textarea id="c_cuadro" style="min-height:60px;" placeholder="—"></textarea></div>
-        <div class="fg full"><label>Examen mental</label><textarea id="c_examen" style="min-height:60px;" placeholder="—"></textarea></div>
-        <div class="fg full"><label>Plan</label><textarea id="c_plan" style="min-height:60px;" placeholder="—"></textarea></div>
-      </div>
-      <div class="btn-row" style="margin-top:14px;">
-        <button class="btn primary" onclick="regenerarDesde()">Regenerar historia desde campos ↗</button>
-      </div>
-    </div>
-  </div>
-
+<header><div class="hdr">
+<div class="logo">
+<div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="8" r="2.5" fill="#fff"/></svg></div>
+<div><div class="logo-name">IC Psiquiatría</div><div class="logo-sub">Policlínico del Olaya</div></div>
 </div>
-
+<span class="badge badge-a" id="hdr-badge">Sin configurar</span>
+</div></header>
+<div class="main">
+<div class="card"><div class="card-h" onclick="tog('cfg')"><div><div class="lbl" style="margin:0">Configuración</div><div style="font-size:12px;color:var(--text2)" id="cfg-sum">API key y Google Apps Script</div></div><span class="arrow" id="cfg-arrow">▼</span></div>
+<div class="collapse" id="cfg"><div class="card-b">
+<label>API Key de Gemini</label>
+<div class="cfg-row"><input type="password" id="api-key" placeholder="Pega tu API key aqui..." oninput="saveKey()"><button class="btn" onclick="toggleVis()">Ver</button></div>
+<div class="st" id="key-st">Obtén tu key en aistudio.google.com/apikey</div>
+<label style="margin-top:10px">URL Google Apps Script (opcional)</label>
+<div class="cfg-row"><input type="url" id="script-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="saveUrl()"></div>
+<div class="st" id="url-st"></div>
+</div></div></div>
+<div class="card"><div class="card-h" onclick="tog('datos')"><div><div class="lbl" style="margin:0">Datos de la consulta</div><div style="font-size:12px;color:var(--text2)">Diagnóstico, tipo, medicamentos</div></div><span class="arrow" id="datos-arrow">▼</span></div>
+<div class="collapse" id="datos"><div class="card-b"><div class="grid">
+<div class="fg"><label>Diagnóstico</label><input id="dx" placeholder="Ej: DELIRIUM, DEPRESIÓN..."></div>
+<div class="fg"><label>Tipo IC</label><select id="tipo_ic"><option value="RESPUESTA A INTERCONSULTA POR PSIQUIATRIA">IC psiquiatría</option><option value="INTERCONSULTA POR PSIQUIATRIA (urgente)">IC urgente</option><option value="CONTROL AMBULATORIO">Control ambulatorio</option></select></div>
+<div class="fg"><label>Valoración con</label><input id="val_con" placeholder="Ej: su madre - CAROLINA"></div>
+<div class="fg"><label>Medicamentos</label><input id="meds" placeholder="Ej: Quetiapina 25mg (0-0-1)"></div>
+<div class="fg f"><label>Contexto hospitalario</label><input id="ctx" placeholder="Ej: en manejo por estenosis traqueal..."></div>
+</div></div></div></div>
+<div class="card">
+<div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between"><div class="lbl" style="margin:0">Relato del paciente</div><div style="display:flex;align-items:center;gap:8px"><span style="font-family:'DM Mono';font-size:12px;color:var(--text2)" id="timer"></span><span class="badge badge-a" id="rec-badge">Listo</span></div></div>
+<div class="card-b">
+<textarea id="transcript" class="ta-voice" placeholder="Graba la voz o escribe el relato..." oninput="onInput()"></textarea>
+<div class="pipe" id="pipe" style="display:none"><span class="pd pd-ok" id="p1"></span><span>Audio</span><span style="color:var(--border)">›</span><span class="pd" id="p2"></span><span>Historia</span><span style="color:var(--border)">›</span><span class="pd" id="p3"></span><span>Doc</span></div>
+<div class="row">
+<button class="btn" id="btn-rec" onclick="toggleRec()"><span class="dot"></span> Grabar voz</button>
+<button class="btn btn-p" id="btn-fin" onclick="finYCrear()" style="display:none">Finalizar y crear historia ↗</button>
+<button class="btn" id="btn-solo" onclick="soloHist()" style="display:none">Solo historia</button>
+<button class="btn" onclick="limpiar()" style="margin-left:auto">Limpiar</button>
+</div>
+<div class="st" id="st">Graba el relato y al finalizar se genera la historia.</div>
+<div id="doc-area"></div>
+</div></div>
+<div class="card">
+<div class="tabs"><button class="tab on" id="t1" onclick="tabSw('hist')">Historia generada</button><button class="tab" id="t2" onclick="tabSw('camp')">Campos</button></div>
+<div id="tab-hist" class="card-b" style="padding-top:12px">
+<textarea id="hist-out" class="ta-hist" placeholder="La historia clínica aparecerá aquí..."></textarea>
+<div class="row"><button class="btn btn-p" onclick="copiar()">Copiar</button><button class="btn" id="btn-doc" onclick="enviarDoc()" style="display:none">Guardar en Drive ↗</button></div>
+<div class="st" id="st-exp"></div>
+</div>
+<div id="tab-camp" class="card-b" style="display:none;padding-top:12px"><div class="grid">
+<div class="fg"><label>Nombre</label><input id="c_nom"></div><div class="fg"><label>Edad</label><input id="c_edad"></div>
+<div class="fg"><label>Origen</label><input id="c_orig"></div><div class="fg"><label>Residencia</label><input id="c_res"></div>
+<div class="fg"><label>Ocupación</label><input id="c_ocup"></div><div class="fg f"><label>Familia</label><input id="c_fam"></div>
+<div class="fg f"><label>Antecedentes</label><textarea id="c_ant" style="min-height:50px"></textarea></div>
+<div class="fg f"><label>Cuadro clínico</label><textarea id="c_cuad" style="min-height:50px"></textarea></div>
+<div class="fg f"><label>Examen mental</label><textarea id="c_exam" style="min-height:50px"></textarea></div>
+<div class="fg f"><label>Plan</label><textarea id="c_plan" style="min-height:50px"></textarea></div>
+</div></div>
+</div></div>
 <script>
-const APPS_SCRIPT_URL_KEY = 'colsubsidio_script_url';
-let recog = null, recOn = false, recInt = null, recSec = 0;
+const KEY_K='ic_key2',URL_K='ic_url2';
+let recog=null,recOn=false,recInt=null,recSec=0;
 
-const PROMPT_SISTEMA = `Eres una psiquiatra colombiana. Tu trabajo es organizar lo que te dictan en una historia clinica profesional, imitando exactamente el estilo de estos ejemplos reales. NUNCA uses comillas en el texto.
+const PROMPT=`Eres una psiquiatra colombiana. Organizas lo que te dictan en historia clinica profesional imitando este estilo. NUNCA uses comillas en el texto.
 
-=== EJEMPLO 1 (cierre IC, manejo ambulatorio) ===
+EJEMPLO:
 RESPUESTA A INTERCONSULTA POR PSIQUIATRIA
 Paciente femenina de 23 anos, natural de cartagena, residente y procedente de Bogota DC, es bachiller, actualmente labora en restaurante. Vive con su hija de 5 anos. Actualmente se encuentra en manejo por estenosis traqueal.
 
-Paciente con antecedente de T. depresivo depresivo, con requerimiento de hospitalizacion en 2 ocasiones en Health and life, la ultima en febrero de 2026 por intoxicacion exogena con quetiapina (30 tabletas de 100mg). Se habia indicado manejo con Sertralina 100 mg y quetiapina 100 mg tab (0-0-1), sin embargo, por dificultad en los controles, no ha sido adherente con regularidad al manejo.
+Paciente con antecedente de T. depresivo, con requerimiento de hospitalizacion en 2 ocasiones en Health and life, la ultima en febrero de 2026 por intoxicacion exogena con quetiapina (30 tabletas de 100mg). Se habia indicado manejo con Sertralina 100 mg y quetiapina 100 mg tab (0-0-1), sin embargo, por dificultad en los controles, no ha sido adherente con regularidad al manejo.
 
-Refiere que actualmente presenta modulacion afectiva, sin episodios de panicos, sin episodios desbordante, sin ideacion de muerte o de suicidio. Una vez ha iniciado su actividad laboral, hay sensacion de bienestar. Tiene alteracion en el patron del sueno, aunque en manejo con quetiapina, logra continuarlo. Tiene adecuado patron alimentario.
+Refiere que actualmente presenta modulacion afectiva, sin episodios de panicos, sin ideacion de muerte o de suicidio. Tiene alteracion en el patron del sueno, aunque en manejo con quetiapina, logra continuarlo.
 Niega sintomas psicoticos, maniformes, ideas de auto o heteroagresion. Niega ideas de muerte o de suicidio.
 
 EXAMEN MENTAL:
 Se encuentra a la paciente en su habitacion, en compania de su madre. Con adecuada higiene y acorde al contexto hospitalario, alerta, contactado con el entorno, orientado en tres esferas, euprosexica, eulalico, euquinetico, con afecto modulado, resonante y congruente con el discurso. Pensamiento logico, coherente, con ideas sobrevaloradas de preocupacion por retornar a su trabajo. Niega ideas de muerte, de suicidio o de autoagresion. No verbaliza ideacion delirante. No impresiona actitud alucinatoria. inteligencia impresiona, juicio y raciocinio conservado, introspeccion parcial, prospeccion hacia la mejoria.
 
 ANALISIS:
-Paciente femenina de 23 anos, actualmente en manejo por estenosis traqueal. Paciente con antecedente de T. depresivo; actualmente con remision de sus sintomas afectivos, con remision de su ideacion de muerte y/o suicidio. Actualmente con mejoria en su funcionalidad, con deseo de continuar controles, mayor insight de sus sintomas y cuadro clinico. No ha presentado conductas de alto riesgo o impulsivas que afectan su integridad. En el momento considero reiniciar manejo farmacologico y continuar manejo de forma ambulatoria con control en 15 dias por psiquiatria y con signos de alarma. Se resuelven dudas y se cierra IC.
+Paciente femenina de 23 anos, actualmente en manejo por estenosis traqueal. Paciente con antecedente de T. depresivo; actualmente con remision de sus sintomas afectivos. Actualmente con mejoria en su funcionalidad. No ha presentado conductas de alto riesgo. En el momento considero reiniciar manejo farmacologico y continuar manejo de forma ambulatoria con control en 15 dias. Se resuelven dudas y se cierra IC.
 
 PLAN:
 Se cierra IC por psiquiatria
@@ -482,428 +142,80 @@ Control ambulatorio por psiquiatria en 15 dias
 Control ambulatorio por psicologia- Semanal.
 Recomendaciones y signos de alarma para consultar.
 
-=== EJEMPLO 2 (remision USM, caso grave) ===
-RESPUESTA A INTERCONSULTA POR PSIQUIATRIA- VALORACION CON SU MADRE-CAROLINA CAICEDO NEIRA.
-Paciente femenina de 14 anos, natural, residente y procedente de Bogota, Cundinamarca. Vive con su tia y primas. Como escolaridad culmino octavo grado.
+TU TRABAJO:
+1. ORGANIZAR lo que te dictan en historia clinica con este formato. Parrafos clinicos fluidos.
+2. EXAMEN MENTAL: Construyelo tu con vocabulario clinico (euprosexica, eulalico, euquinetico, afecto, introspeccion, prospeccion).
+3. ANALISIS: Redactalo tu con razonamiento clinico.
+4. PLAN: Transcribelo EXACTAMENTE como te lo dictan. NO cambies medicamentos, dosis ni conducta. Si dicen salida es salida, si dicen hospitalizacion es hospitalizacion.
+5. NUNCA uses comillas. Verbalizaciones con Refiere: sin comillas.
+6. Negaciones al final del cuadro clinico.
+7. *** para datos que falten.
+8. RESPONDE SOLO CON LA HISTORIA CLINICA COMPLETA. Sin explicaciones, sin backticks, sin texto adicional antes o despues.`;
 
-Paciente con antecedente de manejo por psiquiatria, con Trastorno depresivo Mayor, con intento de suicidio hace 1 ano, con manejo en USM en clinica La Paz. Desde entonces en manejo con Sertralina 50 mg tab (1-0-0). Con intentos de cutting en multiples ocasiones. No ha tenido controles ambulatorios por dificultad en agendamiento de sus citas.
+async function callAI(sys,usr){
+  const k=localStorage.getItem(KEY_K);
+  if(!k)throw new Error('Configura tu API key en configuracion.');
+  const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+k,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:[{parts:[{text:usr}]}],generationConfig:{maxOutputTokens:2048,temperature:0.15}})
+  });
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.error?d.error.message:JSON.stringify(d));
+  if(!d.candidates||!d.candidates[0])throw new Error('Sin respuesta de Gemini.');
+  return d.candidates[0].content.parts[0].text.trim();
+}
 
-Paciente con cuadro clinico de larga data de sintomas afectivos. Con cuadro clinico que inicia hace 5 anos, posterior al fallecimiento de su madre. Ha venido presentando dificultades a nivel de su colegio, con dificultad para acatar senalamientos y con conductas de heteroagresion hacia una de sus companeras. La paciente refiere que ha venido presentando concomitante incremento de animo triste, anhedonia, ideas sobrevaloradas de tristeza, soledad, culpa, ideas de muerte y con ideacion de suicidio con mecanismo de intoxicacion, con intento de suicidio hace 2 dias, con toma de 10 tabletas de sertralina, 3 acetaminofen y 2 dipironas. En cuanto al patron del sueno, con insomnio de conciliacion. En cuanto al patron alimentario, sin hiporexia.
-
-EXAMEN MENTAL:
-Se encuentra a paciente en compania de su tia. Luce con adecuada higiene y presentacion personal, alerta, orientado en tres esferas, eulalica, euprosexica, euquinetico. Con afecto de fondo ansioso, triste, contenido, modulado, con ideas sobrevaloradas de desesperanza, tristeza, minimiza sus sintomas, con ideas de muerte e ideas de suicidio. No impresiona la actitud alucinatoria, niega alucinaciones auditivas. Juicio y raciocinio debilitado, introspeccion pobre, prospeccion incierta.
-
-ANALISIS.
-Paciente femenina de 14 anos, con antecedente de manejo por psiquiatria. Quien ha tenido intentos de suicidio previamente. Paciente quien viene presentando cuadro clinico consistente en cambios comportamentales agudos, asociado a sintomas afectivos que inician hace 5 anos y a raiz del fallecimiento de su madre. Ha venido presentando exacerbacion de conductas de heteroagresion y adicional sintomas depresivos, con reciente intento de suicidio, del cual hace pobre critica. Paciente con alto riesgo de suicidio, que considero debe continuar manejo en unidad de salud mental. Se explica al paciente y a su madre la conducta.
-
-PLAN:
-Remision a USM.
-Quetiapina 25 mg tab (0-0-1/2)
-Vigilancia por alto riesgo de heteroagresion, suicidio y acting.
-Se sugiere acompanamiento permanente por su familiar, y supervision de la toma de medicamentos.
-
-=== TU TRABAJO ===
-1. ORGANIZAR lo que te dictan en el formato de historia clinica de los ejemplos. Reorganiza la informacion en parrafos clinicos fluidos.
-2. EXAMEN MENTAL: Construyelo tu con vocabulario clinico (euprosexica, eulalico, euquinetico, afecto modulado/triste/ansioso, introspeccion, prospeccion) basandote en lo que te dictan del paciente.
-3. ANALISIS: Redactalo tu con razonamiento clinico, basandote en los datos dictados.
-4. PLAN: Transcribelo EXACTAMENTE como te lo dictan. NO cambies medicamentos, dosis, posologia ni conducta. Si dicen salida es salida. Si dicen hospitalizacion es hospitalizacion.
-5. NUNCA uses comillas. Verbalizaciones con dos puntos: Refiere: me senti muy mal.
-6. Las negaciones van al final del cuadro clinico.
-7. Usa *** para datos que no te dieron.
-8. Solo devuelve la historia. Sin explicaciones ni texto adicional.`;
-// Init
-window.addEventListener('load', () => {
-  const saved = localStorage.getItem(APPS_SCRIPT_URL_KEY);
-  if (saved) {
-    document.getElementById('webhook-url').value = saved;
-    document.getElementById('config-summary').textContent = 'Conectado ✓';
-    document.getElementById('conn-badge').className = 'badge green';
-    document.getElementById('conn-badge').textContent = 'Conectado';
-    document.getElementById('webhook-status').textContent = 'URL guardada.';
-    document.getElementById('webhook-status').className = 'status-line ok';
-  }
-  const savedKey = localStorage.getItem('gemini_api_key');
-  if (savedKey) {
-    document.getElementById('gemini-key-input').value = savedKey;
-    document.getElementById('gemini-key-status').textContent = 'API key guardada en este navegador.';
-    document.getElementById('gemini-key-status').className = 'status-line ok';
-    document.getElementById('conn-badge').className = 'badge green';
-    document.getElementById('conn-badge').textContent = 'Lista';
-    document.getElementById('config-summary').textContent = 'API key configurada ✓';
-  } else {
-    toggleConfig();
-  }
+window.addEventListener('load',()=>{
+  const k=localStorage.getItem(KEY_K);if(k){document.getElementById('api-key').value=k;setKeyOk();}else tog('cfg');
+  const u=localStorage.getItem(URL_K);if(u)document.getElementById('script-url').value=u;
 });
+function saveKey(){const k=document.getElementById('api-key').value.trim();if(k.length>10){localStorage.setItem(KEY_K,k);setKeyOk();}}
+function setKeyOk(){document.getElementById('key-st').textContent='Key guardada.';document.getElementById('key-st').className='st st-ok';document.getElementById('hdr-badge').textContent='Lista';document.getElementById('hdr-badge').className='badge badge-g';document.getElementById('cfg-sum').textContent='Configurada ✓';}
+function saveUrl(){const u=document.getElementById('script-url').value.trim();if(u.startsWith('https://'))localStorage.setItem(URL_K,u);}
+function toggleVis(){const i=document.getElementById('api-key');i.type=i.type==='password'?'text':'password';}
+function tog(id){document.getElementById(id).classList.toggle('open');}
 
-function onGeminiKeyInput() {
-  const key = document.getElementById('gemini-key-input').value.trim();
-  if (key.length > 10) {
-    localStorage.setItem('gemini_api_key', key);
-    document.getElementById('gemini-key-status').textContent = 'API key guardada. Lista para usar.';
-    document.getElementById('gemini-key-status').className = 'status-line ok';
-    document.getElementById('conn-badge').className = 'badge green';
-    document.getElementById('conn-badge').textContent = 'Lista';
-    document.getElementById('config-summary').textContent = 'API key configurada ✓';
-  } else {
-    document.getElementById('gemini-key-status').textContent = 'Pega tu API key aqui';
-    document.getElementById('gemini-key-status').className = 'status-line err';
-  }
+function toggleRec(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){setSt('Usa Chrome.','st-err');return;}recOn?stopRec():startRec();}
+function startRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='es-CO';
+  let fin=document.getElementById('transcript').value;
+  recog.onstart=()=>{recOn=true;recSec=0;document.getElementById('btn-rec').className='btn btn-rec';document.getElementById('btn-rec').innerHTML='<span class="dot"></span> Pausar';document.getElementById('rec-badge').className='badge badge-r';document.getElementById('rec-badge').textContent='Grabando';recInt=setInterval(()=>{recSec++;document.getElementById('timer').textContent=String(Math.floor(recSec/60)).padStart(2,'0')+':'+String(recSec%60).padStart(2,'0');},1000);setSt('Escuchando...','st-load');};
+  recog.onresult=e=>{let int='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)fin+=e.results[i][0].transcript+' ';else int+=e.results[i][0].transcript;}const ta=document.getElementById('transcript');ta.value=fin+int;ta.scrollTop=ta.scrollHeight;};
+  recog.onerror=e=>{setSt('Error: '+e.error,'st-err');stopRec();};recog.onend=()=>{if(recOn)stopRec();};recog.start();
+}
+function stopRec(){recOn=false;if(recog)recog.stop();clearInterval(recInt);document.getElementById('btn-rec').className='btn';document.getElementById('btn-rec').innerHTML='<span class="dot"></span> Grabar voz';document.getElementById('rec-badge').className='badge badge-g';document.getElementById('rec-badge').textContent='Listo ✓';document.getElementById('timer').textContent='';showB();setSt('Pausada. Graba mas o finaliza.','st-ok');}
+function onInput(){document.getElementById('transcript').value.trim().length>0?showB():hideB();}
+function showB(){document.getElementById('btn-fin').style.display='';document.getElementById('btn-solo').style.display='';}
+function hideB(){document.getElementById('btn-fin').style.display='none';document.getElementById('btn-solo').style.display='none';}
+
+function getCtx(){let x='';const d=document.getElementById('dx').value,t=document.getElementById('tipo_ic').value,v=document.getElementById('val_con').value,m=document.getElementById('meds').value,c=document.getElementById('ctx').value;if(d)x+='\nDIAGNOSTICO: '+d;if(t)x+='\nTIPO: '+t;if(v)x+='\nVALORACION CON: '+v;if(c)x+='\nCONTEXTO: '+c;if(m)x+='\nMEDICAMENTOS PLAN: '+m;return x;}
+
+async function finYCrear(){hideB();const h=await gen();if(!h)return;const u=localStorage.getItem(URL_K);if(u)await crearDoc(h);else{setSt('Historia lista. Configura Apps Script para Drive.','st-ok');document.getElementById('btn-doc').style.display='';}}
+async function soloHist(){hideB();await gen();}
+
+async function gen(){
+  const txt=document.getElementById('transcript').value.trim();
+  if(!txt){setSt('Primero graba o escribe.','st-err');return null;}
+  document.getElementById('hist-out').value='';document.getElementById('doc-area').innerHTML='';document.getElementById('btn-doc').style.display='none';
+  setPipe(1,'pd-ok');setPipe(2,'pd-on');setPipe(3,'');setSt('Generando historia clinica...','st-load');
+  const msg='DICTADO:\n'+txt+getCtx()+'\n\nOrganiza en historia clinica completa con EXAMEN MENTAL, ANALISIS y PLAN. El PLAN exactamente como te lo dicte.';
+  try{const h=await callAI(PROMPT,msg);document.getElementById('hist-out').value=h;setPipe(2,'pd-ok');setSt('Historia generada.','st-ok');document.getElementById('btn-doc').style.display='';return h;}
+  catch(e){setPipe(2,'pd-err');setSt('Error: '+e.message,'st-err');return null;}
 }
 
-function toggleKeyVisibility() {
-  const input = document.getElementById('gemini-key-input');
-  input.type = input.type === 'password' ? 'text' : 'password';
+async function enviarDoc(){const h=document.getElementById('hist-out').value.trim();if(!h)return;const u=localStorage.getItem(URL_K);if(!u){setSt('Configura Apps Script.','st-err');return;}setSt('Creando Doc...','st-load');await crearDoc(h);}
+async function crearDoc(h){
+  const u=localStorage.getItem(URL_K);
+  try{await fetch(u,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:'***',diagnostico:document.getElementById('dx').value||'IC',tipo_ic:document.getElementById('tipo_ic').value,historia:h})});
+  setPipe(3,'pd-ok');setSt('Doc enviado a Drive.','st-ok');document.getElementById('doc-area').innerHTML='<a class="doc-link" href="https://drive.google.com/drive/folders/1Ql2IimpT-4nrOxFfLFw6E0g5nfqzKaCG" target="_blank">Abrir carpeta en Drive →</a>';document.getElementById('btn-doc').style.display='none';}
+  catch(e){setPipe(3,'pd-err');setSt('Error Doc: '+e.message,'st-err');}
 }
 
-function onUrlInput() {
-  const url = document.getElementById('webhook-url').value.trim();
-  if (url.startsWith('https://script.google.com')) {
-    localStorage.setItem(APPS_SCRIPT_URL_KEY, url);
-    document.getElementById('config-summary').textContent = 'URL guardada';
-    document.getElementById('conn-badge').className = 'badge blue';
-    document.getElementById('conn-badge').textContent = 'Guardada';
-  }
-}
-
-function toggleConfig() {
-  const body = document.getElementById('config-body');
-  const toggle = document.getElementById('config-toggle');
-  const open = body.classList.toggle('open');
-  toggle.classList.toggle('open', open);
-}
-
-function toggleDatos() {
-  const body = document.getElementById('datos-body');
-  const toggle = document.getElementById('datos-toggle');
-  const open = body.classList.toggle('open');
-  toggle.classList.toggle('open', open);
-}
-
-async function probarWebhook() {
-  const url = document.getElementById('webhook-url').value.trim();
-  if (!url) { setWStatus('Pega la URL primero.', 'err'); return; }
-  setWStatus('Probando...', 'loading');
-  try {
-    const res = await fetch(url + '?test=1', { method: 'GET', mode: 'no-cors' });
-    localStorage.setItem(APPS_SCRIPT_URL_KEY, url);
-    document.getElementById('conn-badge').className = 'badge green';
-    document.getElementById('conn-badge').textContent = 'Conectado';
-    document.getElementById('config-summary').textContent = 'Conectado ✓';
-    setWStatus('URL guardada. La conexión está lista.', 'ok');
-  } catch(e) {
-    setWStatus('No se pudo verificar. Guarda la URL igual y prueba generando un doc.', 'err');
-  }
-}
-
-function toggleRec() {
-  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    setStatus('Usa Chrome o Safari para grabación de voz.', 'err'); return;
-  }
-  recOn ? stopRec(true) : startRec();
-}
-
-function startRec() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recog = new SR();
-  recog.continuous = true;
-  recog.interimResults = true;
-  recog.lang = 'es-CO';
-  let final = document.getElementById('transcript').value;
-
-  recog.onstart = () => {
-    recOn = true; recSec = 0;
-    const btn = document.getElementById('btn-rec');
-    btn.className = 'btn recording-btn';
-    btn.innerHTML = '<span class="rec-pulse"></span> Pausar';
-    document.getElementById('rec-badge').className = 'badge red recording';
-    document.getElementById('rec-badge').innerHTML = '<span class="rec-pulse"></span> Grabando';
-    recInt = setInterval(() => {
-      recSec++;
-      const m = String(Math.floor(recSec/60)).padStart(2,'0');
-      const s = String(recSec%60).padStart(2,'0');
-      document.getElementById('rec-timer').textContent = m+':'+s;
-    }, 1000);
-    setStatus('Escuchando en español colombiano...', 'loading');
-  };
-
-  recog.onresult = e => {
-    let interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
-      else interim += e.results[i][0].transcript;
-    }
-    const ta = document.getElementById('transcript');
-    ta.value = final + interim;
-    ta.scrollTop = ta.scrollHeight;
-  };
-
-  recog.onerror = e => {
-    setStatus('Error al grabar: ' + e.error, 'err');
-    stopRec(false);
-  };
-
-  recog.onend = () => { if (recOn) stopRec(); };
-  recog.start();
-}
-
-function stopRec() {
-  recOn = false;
-  if (recog) recog.stop();
-  clearInterval(recInt);
-  const btn = document.getElementById('btn-rec');
-  btn.className = 'btn';
-  btn.innerHTML = '<span class="rec-pulse"></span> Grabar voz';
-  document.getElementById('rec-badge').className = 'badge green';
-  document.getElementById('rec-badge').innerHTML = 'Listo ✓';
-  document.getElementById('rec-timer').textContent = '';
-  document.getElementById('btn-finalizar').style.display = '';
-  setStatus('Grabación pausada. Puedes seguir grabando o finalizar.', 'ok');
-}
-
-function setPipe(step, state) {
-  document.getElementById('pipeline').style.display = 'flex';
-  document.getElementById('p' + step).className = 'pipe-dot ' + state;
-}
-
-function buildContexto() {
-  let x = '';
-  const dx = document.getElementById('dx').value;
-  const tipo = document.getElementById('tipo_ic').value;
-  const con = document.getElementById('valoracion_con').value;
-  const meds = document.getElementById('meds').value;
-  const ctx = document.getElementById('ctx_hosp').value;
-  if (dx) x += `\nDIAGNÓSTICO: ${dx}`;
-  if (tipo) x += `\nTIPO IC: ${tipo}`;
-  if (con) x += `\nVALORACIÓN CON: ${con}`;
-  if (ctx) x += `\nCONTEXTO HOSPITALARIO: ${ctx}`;
-  if (meds) x += `\nMEDICAMENTOS: ${meds}`;
-  return x;
-}
-
-async function callGemini(systemPrompt, userMsg) {
-  const apiKey = localStorage.getItem('gemini_api_key');
-  if (!apiKey) throw new Error('Configura tu API key de Gemini en la seccion de configuracion.');
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ parts: [{ text: userMsg }] }],
-      generationConfig: { maxOutputTokens: 1500, temperature: 0.2 }
-    })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ? data.error.message : JSON.stringify(data));
-  if (!data.candidates || !data.candidates[0]) throw new Error('Gemini no devolvio respuesta.');
-  return data.candidates[0].content.parts[0].text.trim();
-}
-
-function onTranscriptInput() {
-  const hasText = document.getElementById('transcript').value.trim().length > 0;
-  document.getElementById('btn-finalizar').style.display = hasText ? '' : 'none';
-  document.getElementById('btn-solo').style.display = hasText ? '' : 'none';
-}
-
-function finalizarYCrear() {
-  document.getElementById('btn-finalizar').style.display = 'none';
-  document.getElementById('btn-solo').style.display = 'none';
-  generarYCrear();
-}
-
-function soloFinalizar() {
-  document.getElementById('btn-finalizar').style.display = 'none';
-  document.getElementById('btn-solo').style.display = 'none';
-  soloGenerar();
-}
-
-async function generarYCrear() {
-  const texto = document.getElementById('transcript').value.trim();
-  if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
-
-  document.getElementById('historia-out').value = '';
-  document.getElementById('doc-link-area').innerHTML = '';
-  document.getElementById('btn-send-doc').style.display = 'none';
-  setPipe(1,'done'); setPipe(2,'active'); setPipe(3,'');
-  setStatus('Generando historia clínica con IA...', 'loading');
-
-  const msg = `DICTADO DEL CASO:
-${texto}${buildContexto()}
-
-Organiza esto en historia clinica. El PLAN transcribelo exactamente como te lo dicte, sin cambiar medicamentos ni conducta.`;
-  let historia = '';
-
-  try {
-    historia = await callGemini(PROMPT_SISTEMA, msg);
-    document.getElementById('historia-out').value = historia;
-    setPipe(2,'done');
-    extraerCampos(historia);
-  } catch(e) {
-    setStatus('Error: ' + e.message, 'err');
-    setPipe(2,'err'); return;
-  }
-
-  const url = localStorage.getItem(APPS_SCRIPT_URL_KEY);
-  if (!url) {
-    setStatus('Historia lista. Configura el Apps Script para guardar en Drive.', 'ok');
-    document.getElementById('btn-send-doc').style.display = '';
-    setPipe(3,'err');
-    return;
-  }
-
-  setPipe(3,'active');
-  setStatus('Creando documento en Google Drive...', 'loading');
-  await crearDoc(historia);
-}
-
-async function soloGenerar() {
-  const texto = document.getElementById('transcript').value.trim();
-  if (!texto) { setStatus('Primero graba o escribe el relato.', 'err'); return; }
-  setStatus('Generando historia...', 'loading');
-  const msg = `DICTADO DEL CASO:
-${texto}${buildContexto()}
-
-INSTRUCCIONES:
-- Usa los datos demograficos y clinicos del relato como base.
-- El cuadro clinico reformulalo en lenguaje psiquiatrico profesional, no lo transcribas literal.
-- El ANALISIS debe mostrar razonamiento clinico propio: diagnostico justificado, correlacion clinica, nivel de riesgo, decision terapeutica.
-- El PLAN debe ser completo y clinicamente apropiado para el diagnostico. Si no se mencionan medicamentos, propone los indicados.
-- La historia debe sonar como escrita por un psiquiatra experto, no como una transcripcion del relato.`;
-  try {
-    const h = await callGemini(PROMPT_SISTEMA, msg);
-    document.getElementById('historia-out').value = h;
-    document.getElementById('btn-send-doc').style.display = '';
-    extraerCampos(h);
-    setStatus('Historia generada. Revisa y edita si es necesario.', 'ok');
-  } catch(e) { setStatus('Error al generar.', 'err'); }
-}
-
-async function enviarADoc() {
-  const h = document.getElementById('historia-out').value.trim();
-  if (!h) { setStatus('No hay historia generada.', 'err'); return; }
-  const url = localStorage.getItem(APPS_SCRIPT_URL_KEY);
-  if (!url) { setWStatus('Pega la URL del Apps Script primero.', 'err'); toggleConfig(); return; }
-  setStatus('Creando documento en Google Drive...', 'loading');
-  await crearDoc(h);
-}
-
-async function crearDoc(historia) {
-  const url = localStorage.getItem(APPS_SCRIPT_URL_KEY);
-  const nombre = document.getElementById('c_nombre').value || '***';
-  const payload = {
-    nombre,
-    diagnostico: document.getElementById('dx').value || 'INTERCONSULTA POR PSIQUIATRÍA',
-    tipo_ic: document.getElementById('tipo_ic').value,
-    historia
-  };
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    setPipe(3,'done');
-    setStatus('Documento enviado a Google Drive. Ábrelo desde Drive.', 'ok');
-    document.getElementById('doc-link-area').innerHTML =
-      `<a class="doc-link" href="https://drive.google.com/drive/folders/1Ql2IimpT-4nrOxFfLFw6E0g5nfqzKaCG" target="_blank">Abrir carpeta en Google Drive →</a>`;
-    document.getElementById('btn-send-doc').style.display = 'none';
-  } catch(e) {
-    setPipe(3,'err');
-    setStatus('Error al crear el documento. Verifica la URL del script.', 'err');
-  }
-}
-
-async function extraerCampos(historia) {
-  const prompt = `Del siguiente texto extrae los campos en JSON puro sin backticks ni markdown:
-{"nombre":"","edad":"","origen":"","residencia":"","ocupacion":"","religion":"","familia":"","motivo":"","antecedentes":"","cuadro":"","examen":"","plan":""}
-HISTORIA:\n${historia}`;
-  try {
-    const raw = (await callGemini('', prompt)).replace(/```json|```/g,'').trim();
-    const p = JSON.parse(raw);
-    const map = {
-      nombre:'c_nombre', edad:'c_edad', origen:'c_origen', residencia:'c_residencia',
-      ocupacion:'c_ocupacion', religion:'c_religion', familia:'c_familia', motivo:'c_motivo',
-      antecedentes:'c_antecedentes', cuadro:'c_cuadro', examen:'c_examen', plan:'c_plan'
-    };
-    Object.keys(map).forEach(k => {
-      const el = document.getElementById(map[k]);
-      if (el && p[k] && p[k] !== '***') el.value = p[k];
-    });
-  } catch(e) {}
-}
-
-async function regenerarDesde() {
-  const campos = {
-    nombre: document.getElementById('c_nombre').value,
-    edad: document.getElementById('c_edad').value,
-    origen: document.getElementById('c_origen').value,
-    residencia: document.getElementById('c_residencia').value,
-    ocupacion: document.getElementById('c_ocupacion').value,
-    religion: document.getElementById('c_religion').value,
-    familia: document.getElementById('c_familia').value,
-    motivo: document.getElementById('c_motivo').value,
-    antecedentes: document.getElementById('c_antecedentes').value,
-    cuadro: document.getElementById('c_cuadro').value,
-    examen: document.getElementById('c_examen').value,
-    plan: document.getElementById('c_plan').value,
-  };
-  setStatus('Regenerando historia desde campos...', 'loading');
-  const msg = `INSTRUCCION CRITICA: Usa TODOS los datos sin omitir nada. Regenera la historia clinica con estos datos corregidos:\n${JSON.stringify(campos, null, 2)}${buildContexto()}\n\nNo omitas ningun campo que tenga contenido.`;
-  try {
-    const h = await callGemini(PROMPT_SISTEMA, msg);
-    document.getElementById('historia-out').value = h;
-    switchTab('historia', document.getElementById('tab-btn-historia'));
-    document.getElementById('btn-send-doc').style.display = '';
-    setStatus('Historia regenerada. Revisa y guarda en Drive.', 'ok');
-  } catch(e) { setStatus('Error al regenerar.', 'err'); }
-}
-
-function switchTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-historia').style.display = tab === 'historia' ? '' : 'none';
-  document.getElementById('tab-campos').style.display = tab === 'campos' ? '' : 'none';
-}
-
-function copiarHistoria() {
-  const h = document.getElementById('historia-out').value;
-  if (!h) return;
-  navigator.clipboard.writeText(h).then(() => {
-    document.getElementById('status-export').textContent = 'Historia copiada al portapapeles.';
-    document.getElementById('status-export').className = 'status-line ok';
-  });
-}
-
-function limpiarTodo() {
-  ['transcript','historia-out','c_nombre','c_edad','c_origen','c_residencia','c_ocupacion',
-   'c_religion','c_familia','c_motivo','c_antecedentes','c_cuadro','c_examen','c_plan',
-   'dx','valoracion_con','meds','ctx_hosp'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('tipo_ic').selectedIndex = 0;
-  document.getElementById('doc-link-area').innerHTML = '';
-  document.getElementById('pipeline').style.display = 'none';
-  document.getElementById('btn-send-doc').style.display = 'none';
-  document.getElementById('rec-badge').className = 'badge amber';
-  document.getElementById('rec-badge').innerHTML = '<span class="rec-pulse"></span> Listo';
-  document.getElementById('btn-finalizar').style.display = 'none';
-  document.getElementById('btn-solo').style.display = 'none';
-  document.getElementById('rec-timer').textContent = '';
-  setStatus('Listo para nuevo paciente.', '');
-  document.getElementById('status-export').textContent = '';
-}
-
-function setStatus(msg, type) {
-  const el = document.getElementById('status-main');
-  el.textContent = msg;
-  el.className = 'status-line ' + (type || '');
-}
-function setWStatus(msg, type) {
-  const el = document.getElementById('webhook-status');
-  el.textContent = msg;
-  el.className = 'status-line ' + (type || '');
-}
+function setPipe(n,c){document.getElementById('pipe').style.display='flex';document.getElementById('p'+n).className='pd '+c;}
+function setSt(m,c){const e=document.getElementById('st');e.textContent=m;e.className='st '+(c||'');}
+function tabSw(t){document.getElementById('t1').className='tab'+(t==='hist'?' on':'');document.getElementById('t2').className='tab'+(t==='camp'?' on':'');document.getElementById('tab-hist').style.display=t==='hist'?'':'none';document.getElementById('tab-camp').style.display=t==='camp'?'':'none';}
+function copiar(){const h=document.getElementById('hist-out').value;if(!h)return;navigator.clipboard.writeText(h).then(()=>{document.getElementById('st-exp').textContent='Copiada.';document.getElementById('st-exp').className='st st-ok';});}
+function limpiar(){['transcript','hist-out','c_nom','c_edad','c_orig','c_res','c_ocup','c_fam','c_ant','c_cuad','c_exam','c_plan','dx','val_con','meds','ctx'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('tipo_ic').selectedIndex=0;document.getElementById('doc-area').innerHTML='';document.getElementById('pipe').style.display='none';document.getElementById('btn-doc').style.display='none';hideB();document.getElementById('rec-badge').className='badge badge-a';document.getElementById('rec-badge').textContent='Listo';document.getElementById('timer').textContent='';setSt('Listo.','');document.getElementById('st-exp').textContent='';}
 </script>
 </body>
 </html>
